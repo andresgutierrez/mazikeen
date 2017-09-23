@@ -5,29 +5,29 @@ LDFLAGS=-L/opt/local/lib -luv
 
 default: mazikeen
 
-mazikeen: src/m.o src/scanner.o src/parser.o
-	gcc $(LDFLAGS) src/m.o src/scanner.o src/parser.o -o mazikeen
+mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o
+	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o -o mazikeen
 
 src/m.o: src/m.c src/mk.h
 	$(CC) $(CFLAGS) -c src/m.c -o src/m.o
 
-src/parser.o: src/parser.c src/mk.h
-	$(CC) $(CFLAGS) -c src/parser.c -o src/parser.o
+src/parser/parser.o: src/parser/parser.c src/mk.h
+	$(CC) $(CFLAGS) -c src/parser/parser.c -o src/parser/parser.o
 
-src/scanner.o: src/scanner.c src/mk.h
-	$(CC) $(CFLAGS) -c src/scanner.c -o src/scanner.o
+src/parser/scanner.o: src/parser/scanner.c src/mk.h
+	$(CC) $(CFLAGS) -c src/parser/scanner.c -o src/parser/scanner.o
 
-src/parser.c: src/language.c src/base.c
-	cat src/language.c src/base.c > src/parser.c
+src/parser/parser.c: src/parser/language.c src/parser/base.c
+	cat src/parser/language.c src/parser/base.c > src/parser/parser.c
 
-src/language.c: src/language.inc.h src/lemon src/language.lemon
-	cd src && ./lemon language.lemon
+src/parser/language.c: src/parser/language.inc.h src/parser/lemon src/parser/language.lemon
+	cd src/parser && ./lemon language.lemon
 
-src/scanner.c: src/scanner.re src/scanner.h
-	re2c -o src/scanner.c src/scanner.re
+src/parser/scanner.c: src/parser/scanner.re src/parser/scanner.h
+	re2c -o src/parser/scanner.c src/parser/scanner.re
 
-src/lemon: src/lemon.c
-	gcc src/lemon.c -o src/lemon
+src/parser/lemon: src/parser/lemon.c
+	gcc src/parser/lemon.c -o src/parser/lemon
 
 clean:
 	$(RM) src/*.o src/scanner.c src/language.c src/parser.c
