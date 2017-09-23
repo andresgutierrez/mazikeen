@@ -5,12 +5,20 @@ LDFLAGS=-L/opt/local/lib -luv
 
 default: mazikeen
 
-mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o
-	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o -o mazikeen
+mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o src/ops/executor.o src/ops/create-coll.o
+	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o src/ops/executor.o src/ops/create-coll.o -o mazikeen
 
 src/m.o: src/m.c src/mk.h
 	$(CC) $(CFLAGS) -c src/m.c -o src/m.o
 
+# executor
+src/ops/executor.o: src/ops/executor.c src/mk.h src/ops/executor.h
+	$(CC) $(CFLAGS) -c src/ops/executor.c -o src/ops/executor.o
+
+src/ops/create-coll.o: src/ops/create-coll.c src/ops/executor.h
+	$(CC) $(CFLAGS) -c src/ops/create-coll.c -o src/ops/create-coll.o
+
+# Parser
 src/parser/parser.o: src/parser/parser.c src/mk.h
 	$(CC) $(CFLAGS) -c src/parser/parser.c -o src/parser/parser.o
 

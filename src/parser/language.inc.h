@@ -33,10 +33,12 @@ static mk_ast_node *mk_ret_insert(mk_parser_token *I, mk_ast_node *values)
     return node;
 }
 
-static mk_ast_node *mk_ret_create_coll(mk_parser_token *I, mk_ast_node *fields)
+static mk_ast_node *mk_ret_create_coll(mk_parser_token *C, mk_ast_node *fields)
 {
     mk_ast_node *node = malloc(sizeof(mk_ast_node));
-    node->type = MK_AST_T_INSERT;
+    node->type = MK_AST_T_CREATE_COLL;
+    node->value = C->token;
+    node->len = C->token_len;
     node->n0 = fields;
     return node;
 }

@@ -7,6 +7,7 @@
 
 #include "mk.h"
 #include "parser/parser.h"
+#include "ops/executor.h"
 
 void on_read(uv_fs_t *req);
 
@@ -61,12 +62,13 @@ int main(int argc, char **argv) {
     char *program = "create collection x (a, b, c)";
 
     mk_ast_node *root = mk_parse_command(program, strlen(program), "a.x", &error_msg);
-    if (root != NULL)
-        fprintf(stderr, "%d\n", root->type);
-    else
+    if (root == NULL)
     {
         fprintf(stderr, "Error=%s\n", error_msg);
+        return 0;
     }
+
+    mk_execute_command(root);
 
     /*cl c;
     c.len = 1000;
