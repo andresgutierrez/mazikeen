@@ -58,11 +58,15 @@ void on_open(uv_fs_t *req) {
 int main(int argc, char **argv) {
 
     char *error_msg = NULL;
-    char *program = "insert into x values (1, 2, 3)";
+    char *program = "create collection x (a, b, c)";
 
     mk_ast_node *root = mk_parse_command(program, strlen(program), "a.x", &error_msg);
-
-    fprintf(stderr, "%d\n", root->type);
+    if (root != NULL)
+        fprintf(stderr, "%d\n", root->type);
+    else
+    {
+        fprintf(stderr, "Error=%s\n", error_msg);
+    }
 
     /*cl c;
     c.len = 1000;

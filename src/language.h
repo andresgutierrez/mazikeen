@@ -4,5 +4,7 @@
 #define MK_VALUES                          4
 #define MK_PARENTHESES_OPEN                5
 #define MK_PARENTHESES_CLOSE               6
-#define MK_COMMA                           7
-#define MK_INTEGER                         8
+#define MK_CREATE                          7
+#define MK_COLLECTION                      8
+#define MK_COMMA                           9
+#define MK_INTEGER                        10

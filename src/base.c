@@ -36,7 +36,6 @@ static void mk_parse_with_token(void* mk_parser, int opcode, int parsercode, mk_
 
 mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_path, char **error_msg)
 {
-
     char *error;
     mk_scanner_state *state;
     mk_scanner_token token;
@@ -82,6 +81,7 @@ mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_p
         state->active_token = token.opcode;
 
         state->start_length = (program + program_length - state->start);
+		//fprintf(stderr, "%d\n", token.opcode);
 
         switch (token.opcode) {
 
@@ -91,13 +91,18 @@ mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_p
             case MK_T_INSERT:
                 mk_(mk_parser, MK_INSERT, NULL, parser_status);
                 break;
-
             case MK_T_INTO:
                 mk_(mk_parser, MK_INTO, NULL, parser_status);
                 break;
-
             case MK_T_VALUES:
                 mk_(mk_parser, MK_VALUES, NULL, parser_status);
+                break;
+
+			case MK_T_CREATE:
+                mk_(mk_parser, MK_CREATE, NULL, parser_status);
+                break;
+            case MK_T_COLLECTION:
+                mk_(mk_parser, MK_COLLECTION, NULL, parser_status);
                 break;
 
             case MK_T_PARENTHESES_OPEN:
@@ -173,38 +178,15 @@ mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_p
 
     if (parser_status->status != MK_PARSING_OK) {
         status = FAILURE;
-        /*if (parser_status->syntax_error && error_msg) {
-            array_init(error_msg);
-    #if PHP_VERSION_ID >= 70000
-            add_assoc_string(error_msg, "type", "error");
-            add_assoc_string(error_msg, "message", parser_status->syntax_error);
-            add_assoc_string(error_msg, "file", state->active_file);
-            efree(parser_status->syntax_error);
-    #else
-            add_assoc_string(error_msg, "type", "error", 1);
-            add_assoc_string(error_msg, "message", parser_status->syntax_error, 0);
-            add_assoc_string(error_msg, "file", state->active_file, 1);
-    #endif
-            add_assoc_long(error_msg, "line", state->active_line);
-            add_assoc_long(error_msg, "char", state->active_char);
-
-            parser_status->syntax_error = NULL;
-        }
-        else if (error_msg && Z_TYPE_P(error_msg) != IS_ARRAY) {
-    #if PHP_VERSION_ID >= 70000
-            assert(Z_TYPE(parser_status->ret) == IS_ARRAY);
-            ZVAL_ZVAL(error_msg, &parser_status->ret, 1, 1);
-    #else
-            assert(Z_TYPE_P(parser_status->ret) == IS_ARRAY);
-            ZVAL_ZVAL(error_msg, parser_status->ret, 1, 1);
-    #endif
-        }*/
+        if (parser_status->syntax_error && error_msg) {
+			fprintf(stderr, "%s\n", "syntax error");
+		}
     }
 
     if (status != FAILURE) {
         if (parser_status->status == MK_PARSING_OK) {
-			fprintf(stderr, "%s\n", "hello");
 			mk_ast_node *root = malloc(sizeof(mk_ast_node));
+			assert(parser_status->ret != NULL);
 			memcpy(root, parser_status->ret, sizeof(mk_ast_node));
             return root;
         }

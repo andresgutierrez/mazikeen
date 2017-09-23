@@ -9,12 +9,42 @@
 #include "language.inc.h"
 }
 
-mk_language ::= mk_insert_list(L) . {
-	status->ret = L;
+%syntax_error {
+	fprintf(stderr, "%s\n", status->scanner_state->start);
+	status->status = MK_PARSING_FAILED;
+	status->ret = NULL;
 }
 
-mk_insert_list(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_list(T) PARENTHESES_CLOSE . {
+mk_language ::= mk_command(C) . {
+	status->ret = C;
+}
+
+mk_command(R) ::= mk_insert(I) . {
+	R = I;
+}
+
+mk_command(R) ::= mk_create_coll(I) . {
+	R = I;
+}
+
+mk_insert(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_list(T) PARENTHESES_CLOSE . {
 	R = mk_ret_insert(I, T);
+}
+
+mk_create_coll(R) ::= CREATE COLLECTION IDENTIFIER(I) PARENTHESES_OPEN mk_create_coll_field_list(T) PARENTHESES_CLOSE . {
+	R = mk_ret_create_coll(I, T);
+}
+
+mk_create_coll_field_list(R) ::= mk_create_coll_field_list(L) COMMA mk_create_coll_field(I) . {
+	R = mk_ret_list(L, I);
+}
+
+mk_create_coll_field_list(R) ::= mk_create_coll_field(I) . {
+	R = mk_ret_list(I, NULL);
+}
+
+mk_create_coll_field(R) ::= IDENTIFIER(I) . {
+	R = mk_ret_coll_field_def(I);
 }
 
 mk_values_list(R) ::= mk_values_list(L) COMMA mk_expr(I) . {
@@ -22,7 +52,7 @@ mk_values_list(R) ::= mk_values_list(L) COMMA mk_expr(I) . {
 }
 
 mk_values_list(R) ::= mk_expr(I) . {
-	R = mk_ret_list(NULL, I);
+	R = mk_ret_list(I, NULL);
 }
 
 mk_expr(R) ::= INTEGER(I) . {

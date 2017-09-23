@@ -36,6 +36,8 @@
 #define MK_T_INSERT 350
 #define MK_T_INTO 351
 #define MK_T_VALUES 352
+#define MK_T_CREATE 353
+#define MK_T_COLLECTION 354
 
 /* Operators */
 #define MK_T_AT '@'
