@@ -1,0 +1,30 @@
+
+%token_prefix MK_
+%token_type {mk_parser_token*}
+%default_type {mk_ast_node*}
+%extra_argument {mk_parser_status *status}
+%name mk_
+
+%include {
+#include "language.inc.h"
+}
+
+mk_language(R) ::= mk_insert_list(L) . {
+	R = L;
+}
+
+mk_insert_list(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_list(T) PARENTHESES_CLOSE . {
+	R = mk_ret_insert(I, T);
+}
+
+mk_values_list(R) ::= mk_values_list(L) COMMA mk_expr(I) . {
+	R = mk_ret_list(L, I);
+}
+
+mk_values_list(R) ::= mk_expr(I) . {
+	R = mk_ret_list(NULL, I);
+}
+
+mk_expr(R) ::= INTEGER(I) . {
+    R = mk_ret_literal(MK_T_INTEGER, I);
+}
