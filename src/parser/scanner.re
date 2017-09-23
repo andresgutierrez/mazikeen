@@ -1,7 +1,6 @@
 
 #include <string.h>
 #include "../mk.h"
-#include "parser.h"
 #include "scanner.h"
 
 #define YYCTYPE unsigned char

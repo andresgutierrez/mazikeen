@@ -56,8 +56,8 @@ void on_open(uv_fs_t *req) {
     }
 }
 
-int main(int argc, char **argv) {
-
+int main(int argc, char **argv)
+{
     char *error_msg = NULL;
     char *program = "create collection x (a, b, c)";
 

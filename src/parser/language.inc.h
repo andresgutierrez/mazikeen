@@ -3,7 +3,6 @@
 #include <assert.h>
 
 #include "../mk.h"
-#include "parser.h"
 #include "language.h"
 #include "scanner.h"
 

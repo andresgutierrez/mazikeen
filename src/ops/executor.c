@@ -1,7 +1,5 @@
 
 #include "../mk.h"
-#include "../parser/parser.h"
-#include "executor.h"
 
 void mk_execute_command(mk_ast_node *node)
 {
@@ -12,6 +10,6 @@ void mk_execute_command(mk_ast_node *node)
 
         case MK_AST_T_CREATE_COLL:
             mk_create_coll(node);
-            break;        
+            break;
     }
 }
