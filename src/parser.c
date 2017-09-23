@@ -522,7 +522,7 @@ static void yy_reduce(
       case 0:
 #line 12 "language.lemon"
 {
-	yygotominor.yy23 = yymsp[0].minor.yy23;
+	status->ret = yymsp[0].minor.yy23;
 }
 #line 528 "language.c"
         break;
@@ -800,7 +800,8 @@ static void mk_parse_with_token(void* mk_parser, int opcode, int parsercode, mk_
 	token->len = 0;
 }
 
-void mk_parse_command(char *program, size_t program_length, char *file_path, char **error_msg) {
+mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_path, char **error_msg)
+{
 
     char *error;
     mk_scanner_state *state;
@@ -967,20 +968,15 @@ void mk_parse_command(char *program, size_t program_length, char *file_path, cha
     }
 
     if (status != FAILURE) {
-        /*if (parser_status->status == MK_PARSING_OK) {
-    #if PHP_VERSION_ID >= 70000
-            ZVAL_ZVAL(return_value, &parser_status->ret, 1, 1);
-    #else
-            if (parser_status->ret) {
-                ZVAL_ZVAL(return_value, parser_status->ret, 0, 0);
-                ZVAL_NULL(parser_status->ret);
-                zval_ptr_dtor(&parser_status->ret);
-            } else {
-                array_init(return_value);
-            }
-    #endif
-        }*/
+        if (parser_status->status == MK_PARSING_OK) {
+			fprintf(stderr, "%s\n", "hello");
+			mk_ast_node *root = malloc(sizeof(mk_ast_node));
+			memcpy(root, parser_status->ret, sizeof(mk_ast_node));
+            return root;
+        }
     }
 
     mk_Free(mk_parser, mk_wrapper_free);
+
+	return NULL;
 }

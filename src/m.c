@@ -60,7 +60,9 @@ int main(int argc, char **argv) {
     char *error_msg = NULL;
     char *program = "insert into x values (1, 2, 3)";
 
-    mk_parse_command(program, strlen(program), "a.x", &error_msg);
+    mk_ast_node *root = mk_parse_command(program, strlen(program), "a.x", &error_msg);
+
+    fprintf(stderr, "%d\n", root->type);
 
     /*cl c;
     c.len = 1000;

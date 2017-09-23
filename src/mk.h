@@ -40,8 +40,12 @@ typedef struct _mk_parser_token {
 
 typedef struct _mk_ast_node {
 	int type;
-	struct _mk_ast_node *left;
-	struct _mk_ast_node *right;
+	char *value;
+	int len; 
+	struct _mk_ast_node *n0;
+	struct _mk_ast_node *n1;
+	struct _mk_ast_node *n2;
+	struct _mk_ast_node *n3;
 } mk_ast_node;
 
 typedef struct _mk_parser_status {

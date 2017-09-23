@@ -9,8 +9,8 @@
 #include "language.inc.h"
 }
 
-mk_language(R) ::= mk_insert_list(L) . {
-	R = L;
+mk_language ::= mk_insert_list(L) . {
+	status->ret = L;
 }
 
 mk_insert_list(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_list(T) PARENTHESES_CLOSE . {

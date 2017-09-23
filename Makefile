@@ -20,7 +20,7 @@ src/scanner.o: src/scanner.c src/mk.h
 src/parser.c: src/language.c src/base.c
 	cat src/language.c src/base.c > src/parser.c
 
-src/language.c: src/language.inc.h src/lemon
+src/language.c: src/language.inc.h src/lemon src/language.lemon
 	cd src && ./lemon language.lemon
 
 src/scanner.c: src/scanner.re src/scanner.h

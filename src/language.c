@@ -522,7 +522,7 @@ static void yy_reduce(
       case 0:
 #line 12 "language.lemon"
 {
-	yygotominor.yy23 = yymsp[0].minor.yy23;
+	status->ret = yymsp[0].minor.yy23;
 }
 #line 528 "language.c"
         break;
