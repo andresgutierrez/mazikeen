@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <uv.h>
 
+#include "mk.h"
+#include "parser.h"
+
 void on_read(uv_fs_t *req);
 
 uv_fs_t open_req;
@@ -52,23 +55,12 @@ void on_open(uv_fs_t *req) {
     }
 }
 
-/**
- * Wrapper to alloc memory within the parser
- */
-static void *mk_wrapper_alloc(size_t bytes)
-{
-	return malloc(bytes);
-}
-
-/**
- * Wrapper to free memory within the parser
- */
-static void mk_wrapper_free(void *pointer)
-{
-	free(pointer);
-}
-
 int main(int argc, char **argv) {
+
+    char *error_msg = NULL;
+    char *program = "insert into x values (1, 2, 3)";
+
+    mk_parse_command(program, strlen(program), "a.x", &error_msg);
 
     /*cl c;
     c.len = 1000;
@@ -80,14 +72,6 @@ int main(int argc, char **argv) {
     uv_fs_req_cleanup(&open_req);
     uv_fs_req_cleanup(&read_req);
     uv_fs_req_cleanup(&write_req);*/
-
-    /**
-	 * Start the reentrant parser
-	 */
-    void *mk_parser;
-	mk_parser = mk_Alloc(mk_wrapper_alloc);
-
-    mk_Free(mk_parser, mk_wrapper_free);
 
     return 0;
 }

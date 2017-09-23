@@ -8,6 +8,7 @@ static mk_ast_node *mk_ret_literal(int type, mk_parser_token *T)
 {
     mk_ast_node *node = malloc(sizeof(mk_ast_node));
     node->type = type;
+    fprintf(stderr, "%s\n", T->token);
     return node;
 }
 

@@ -38,8 +38,15 @@ typedef struct _mk_parser_token {
 	int free_flag;
 } mk_parser_token;
 
+typedef struct _mk_ast_node {
+	int type;
+	struct _mk_ast_node *left;
+	struct _mk_ast_node *right;
+} mk_ast_node;
+
 typedef struct _mk_parser_status {
 	int status;
+	mk_ast_node *ret;
 	mk_scanner_state *scanner_state;
 	mk_scanner_token *token;
 	char *syntax_error;
@@ -47,14 +54,11 @@ typedef struct _mk_parser_status {
 	unsigned int number_brackets;
 } mk_parser_status;
 
-typedef struct _mk_ast_node {
-	int type;
-	struct _mk_ast_node *left;
-	struct _mk_ast_node *right;
-} mk_ast_node;
+#define MK_PARSING_OK 1
+#define MK_PARSING_FAILED 0
 
-#define XX_PARSING_OK 1
-#define XX_PARSING_FAILED 0
+#define SUCCESS 1
+#define FAILURE 0
 
 int mk_get_token(mk_scanner_state *state, mk_scanner_token *token);
 
