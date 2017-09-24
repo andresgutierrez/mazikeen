@@ -1,7 +1,13 @@
 
 #include "../mk.h"
 
-void mk_write_value_to_record(mk_document *document, mk_ast_node *value)
+typedef struct mk_insert_open_coll_context {
+    mk_session *session;
+    mk_ast_node *node;
+    mk_collection *collection;
+} mk_insert_open_coll_context;
+
+static void mk_write_value_to_record(mk_document *document, mk_ast_node *value)
 {
     switch (value->type) {
         case MK_AST_T_INTEGER:
@@ -10,20 +16,13 @@ void mk_write_value_to_record(mk_document *document, mk_ast_node *value)
     }
 }
 
-int mk_insert_into_coll(mk_session *session, mk_ast_node *node)
+static void mk_insert_on_open_coll(mk_open_coll_request *req)
 {
-    mk_db *db = session->db;
+    mk_insert_open_coll_context *context = (mk_insert_open_coll_context *) req->data;
 
-    if (db == NULL) {
-        fprintf(stderr, "No database selected\n");
-        return FAILURE;
-    }
-
-    mk_collection *collection = mk_get_collection(db, node->value, node->len);
-    if (collection == NULL) {
-        fprintf(stderr, "Collection '%s' does not exist\n", node->value);
-        return FAILURE;
-    }
+    mk_ast_node *node = context->node;
+    mk_session *session = context->session;
+    mk_collection *collection = context->collection;
 
     int number = 0, limit;
     mk_ast_node *value = node->n0;
@@ -44,28 +43,48 @@ int mk_insert_into_coll(mk_session *session, mk_ast_node *node)
 
     mk_document *document = malloc(sizeof(mk_document));
     document->pointer = 0;
-    document->buffer = malloc(1024);
-    document->buffer_len = 1024;
+    document->buffer = malloc(MK_DOCUMENT_SIZE);
+    document->buffer_len = MK_DOCUMENT_SIZE;
 
     for (int i = 0; i < number; i++) {
         mk_write_value_to_record(document, values[i]);
     }
 
-    //fprintf(stderr, "%d\n", document->pointer);
-
     free(values);
 
     mk_append_document_to_coll(collection, document);
+}
 
-    /*mk_create_coll_context *context = malloc(sizeof(mk_create_coll_context));
+int mk_insert_into_coll(mk_session *session, mk_ast_node *node)
+{
+    mk_db *db = session->db;
 
-    context->stat_req = malloc(sizeof(uv_fs_t));
-    context->stat_req->data = context;
+    if (db == NULL) {
+        fprintf(stderr, "No database selected\n");
+        return FAILURE;
+    }
 
-    context->path = malloc(sizeof(char) * 256);
-    snprintf(context->path, 256, "%s/%s/%s", MK_DATA_DIR, MK_DEFAULT_DB, node->value);
-    fprintf(stderr, "%d %s %s\n", node->type, context->path, node->value);
+    mk_collection *collection = mk_get_collection(db, node->value, node->len);
+    if (collection == NULL) {
+        fprintf(stderr, "Collection '%s' does not exist\n", node->value);
+        return FAILURE;
+    }
 
-    uv_fs_stat(uv_default_loop(), context->stat_req, context->path, mk_create_coll_on_stat);*/
+    mk_open_coll_request *req = (mk_open_coll_request *) malloc(sizeof(mk_open_coll_request));
+    mk_insert_open_coll_context *context = (mk_insert_open_coll_context *) malloc(sizeof(mk_insert_open_coll_context));
+
+    context->session = session;
+    context->node = node;
+    context->collection = collection;
+
+    req->data = context;
+
+    if (collection->is_closed) {
+        fprintf(stderr, "Collection '%s' must be opened\n", node->value);
+        mk_open_coll(collection, req, mk_insert_on_open_coll);
+    } else {
+        mk_insert_on_open_coll(req);
+    }
+
     return SUCCESS;
 }

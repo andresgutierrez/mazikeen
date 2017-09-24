@@ -13,7 +13,7 @@ void mk_append_document_to_coll(mk_collection *collection, mk_document *document
 {
     mk_page *writable_page = mk_get_writable_page(collection);
 
-    //fprintf(stderr, "%zu\n", writable_page->size);
+    fprintf(stderr, "%d\n", writable_page->pointer);
 
     //memcpy();
 }

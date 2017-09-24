@@ -1,6 +1,18 @@
 
 #include "../mk.h"
 
+static void mk_open_coll_on_fetch_page(mk_open_coll_context *context)
+{
+    uv_fs_req_cleanup(context->read_req);
+    free(context->read_req);
+
+    if (context->cb != NULL) {
+        (context->cb)(context->req);
+    }
+
+    free(context);
+}
+
 static void mk_open_coll_on_read(uv_fs_t *req)
 {
     mk_open_coll_context *context = (mk_open_coll_context*) req->data;
@@ -11,14 +23,12 @@ static void mk_open_coll_on_read(uv_fs_t *req)
     }
 
     if (req->result == 0) {
-        uv_fs_req_cleanup(context->read_req);
-        free(context->read_req);
-        free(context);
+        mk_open_coll_on_fetch_page(context);
         return;
     }
 
     if (req->result > 0) {
-        
+
         memcpy(
             context->collection->writable_page->data + context->collection->writable_page->pointer,
             context->iov.base,
@@ -27,11 +37,8 @@ static void mk_open_coll_on_read(uv_fs_t *req)
 
         context->collection->writable_page->pointer += req->result;
 
-        uv_fs_req_cleanup(context->read_req);
-        free(context->read_req);
-        free(context);
+        mk_open_coll_on_fetch_page(context);
         return;
-        //uv_fs_read(uv_default_loop(), &read_req, open_req.result, &iov, 1, -1, on_read);
     }
 }
 
@@ -83,11 +90,14 @@ static void mk_open_coll_on_stat(uv_fs_t *req)
     uv_fs_open(uv_default_loop(), context->open_req, context->collection->path, O_RDWR | O_CREAT, 0644, mk_open_coll_on_open);
 }
 
-int mk_open_coll(mk_collection *collection)
+int mk_open_coll(mk_collection *collection, mk_open_coll_request *req, on_open_coll_cb *cb)
 {
     mk_open_coll_context *context = malloc(sizeof(mk_open_coll_context));
 
     context->collection = collection;
+    context->req = req;
+    context->cb = cb;
+
     context->stat_req = malloc(sizeof(uv_fs_t));
     context->stat_req->data = context;
 

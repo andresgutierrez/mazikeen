@@ -18,6 +18,7 @@ typedef struct _mk_collection {
     char *name;
     int name_len;
     char *path;
+    int is_closed;
     uv_fs_t *open_req;
     int writable_page_offset;
     mk_page* writable_page;

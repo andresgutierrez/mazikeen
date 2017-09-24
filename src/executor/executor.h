@@ -6,6 +6,12 @@
 
 typedef void (on_open_db_cb)(mk_session *session, mk_db *db);
 
+typedef struct _mk_open_coll_request {
+    void *data;
+} mk_open_coll_request;
+
+typedef void (on_open_coll_cb)(mk_open_coll_request *req);
+
 typedef struct _mk_open_db_context {
     mk_session *session;
     char *name;
@@ -19,7 +25,9 @@ typedef struct _mk_open_db_context {
 typedef struct _mk_open_coll_context {
     mk_collection *collection;
     char *buffer;
-    int buffer_len;    
+    int buffer_len;
+    mk_open_coll_request *req;
+    on_open_coll_cb *cb;
     uv_buf_t iov;
     uv_fs_t *stat_req;
     uv_fs_t *read_req;
@@ -40,7 +48,7 @@ int mk_execute_command_str(mk_session *session, const char *command, int command
 
 int mk_create_coll(mk_session *session, mk_ast_node *node);
 int mk_open_db(mk_session *session, mk_ast_node *node, on_open_db_cb *cb);
-int mk_open_coll(mk_collection *collection);
+int mk_open_coll(mk_collection *collection, mk_open_coll_request *req, on_open_coll_cb *cb);
 int mk_insert_into_coll(mk_session *session, mk_ast_node *node);
 
 mk_collection *mk_get_collection(mk_db *db, const char *name, int name_len);
