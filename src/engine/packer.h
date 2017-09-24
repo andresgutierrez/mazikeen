@@ -2,6 +2,6 @@
 #ifndef MK_PACKER_H
 #define MK_PACKER_H
 
-int mk_pack_int();
+void mk_pack_long(mk_document *document, long number);
 
 #endif

@@ -23,12 +23,14 @@ static void mk_open_db_on_scandir(uv_fs_t *req)
         int length = strlen(dent->name);
 
         mk_collection *collection = (mk_collection*) malloc(sizeof(mk_collection));
+        
         collection->name = strndup(dent->name, length);
         collection->name_len = length;
-        collection->path = malloc(sizeof(char) * 256);
-        collection->append_page_offset = 0;
 
+        collection->path = malloc(sizeof(char) * 256);
         snprintf(collection->path, 256, "%s/%s/%s", MK_DATA_DIR, db->name, dent->name);
+
+        mk_open_coll(collection);
 
         db->collections[i++] = collection;
         db->number++;

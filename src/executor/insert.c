@@ -1,16 +1,11 @@
 
 #include "../mk.h"
 
-mk_page *mk_get_writable_page(mk_collection *collection)
-{
-    return mk_allocate_page();
-}
-
-void mk_write_value_to_page(mk_page *writable_page, mk_ast_node *value)
+void mk_write_value_to_record(mk_document *document, mk_ast_node *value)
 {
     switch (value->type) {
         case MK_AST_T_INTEGER:
-            fprintf(stderr, "%ld\n", strtol(value->value, NULL, 10));
+            mk_pack_long(document, strtol(value->value, NULL, 10));
             break;
     }
 }
@@ -30,16 +25,37 @@ int mk_insert_into_coll(mk_session *session, mk_ast_node *node)
         return FAILURE;
     }
 
-    mk_page *writable_page = mk_get_writable_page(collection);
-
+    int number = 0, limit;
     mk_ast_node *value = node->n0;
-    mk_write_value_to_page(writable_page, value->n0);
-    mk_write_value_to_page(writable_page, value->n1->n0);
-    mk_write_value_to_page(writable_page, value->n1->n1->n0);
-    //while (node->n1 !=)
 
-    fprintf(stderr, "%d\n", value->type);
+    do {
+        number++;
+        value = value->n1;
+    } while (value != NULL);
 
+    value = node->n0;
+    limit = number - 1;
+    mk_ast_node **values = malloc(sizeof(mk_ast_node *) * number);
+
+    do {
+        values[limit--] = value->n0;
+        value = value->n1;
+    } while (value != NULL);
+
+    mk_document *document = malloc(sizeof(mk_document));
+    document->pointer = 0;
+    document->buffer = malloc(1024);
+    document->buffer_len = 1024;
+
+    for (int i = 0; i < number; i++) {
+        mk_write_value_to_record(document, values[i]);
+    }
+
+    //fprintf(stderr, "%d\n", document->pointer);
+
+    free(values);
+
+    mk_append_document_to_coll(collection, document);
 
     /*mk_create_coll_context *context = malloc(sizeof(mk_create_coll_context));
 
