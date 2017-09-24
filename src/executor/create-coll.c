@@ -4,14 +4,11 @@
 static void mk_create_coll_cleanup(mk_create_coll_context *context)
 {
     uv_fs_req_cleanup(context->open_req);
-    uv_fs_req_cleanup(context->write_req);
     uv_fs_req_cleanup(context->close_req);
 
     free(context->open_req);
-    free(context->write_req);
     free(context->close_req);
     free(context->path);
-
     free(context);
 }
 
@@ -35,6 +32,9 @@ static void mk_create_coll_write_cb(uv_fs_t *req)
         fprintf(stderr, "error writing to file: %s\n", uv_strerror((int)req->result));
         return;
     }
+
+    uv_fs_req_cleanup(context->write_req);
+    free(context->write_req);
 
     uv_fs_close(uv_default_loop(), context->close_req, context->open_req->result, mk_create_coll_close_cb);
 }

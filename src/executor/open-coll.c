@@ -30,7 +30,7 @@ static void mk_open_coll_on_read(uv_fs_t *req)
     if (req->result > 0) {
 
         memcpy(
-            context->collection->writable_page->data + context->collection->writable_page->pointer,
+            (&context->collection->writable_page->data) + context->collection->writable_page->pointer,
             context->iov.base,
             req->result
         );

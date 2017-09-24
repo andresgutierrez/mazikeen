@@ -50,9 +50,11 @@ static void mk_insert_on_open_coll(mk_open_coll_request *req)
         mk_write_value_to_record(document, values[i]);
     }
 
-    free(values);
-
     mk_append_document_to_coll(collection, document);
+
+    free(context);
+    free(values);
+    free(req);
 }
 
 int mk_insert_into_coll(mk_session *session, mk_ast_node *node)

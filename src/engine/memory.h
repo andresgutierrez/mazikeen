@@ -7,8 +7,7 @@
 
 typedef struct _mk_page {
     int pointer;
-    int size;
-    void *data;
+    uint8_t data[MK_PAGE_SIZE - sizeof(int)];
 } mk_page;
 
 mk_page *mk_allocate_page();
