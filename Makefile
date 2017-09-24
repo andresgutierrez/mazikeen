@@ -41,4 +41,4 @@ src/parser/lemon: src/parser/lemon.c
 	gcc src/parser/lemon.c -o src/parser/lemon
 
 clean:
-	$(RM) src/*.o src/parser/*.o src/ops/*.o src/scanner.c src/language.c src/parser.c
+	$(RM) src/*.o src/parser/*.o src/ops/*.o src/parser/scanner.c src/parser/language.c src/parser/parser.c

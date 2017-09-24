@@ -17,6 +17,10 @@ typedef struct _mk_db {
     mk_collection **collections;
 } mk_db;
 
+typedef struct _mk_session {
+    mk_db *db;    
+} mk_session;
+
 #include "parser/parser.h"
 #include "ops/executor.h"
 

@@ -53,7 +53,7 @@ static void mk_create_coll_on_open(uv_fs_t *req)
     uv_fs_write(uv_default_loop(), context->write_req, context->open_req->result, &iov, 1, -1, mk_create_coll_write_cb);
 }
 
-void mk_create_coll_on_stat(uv_fs_t *req)
+static void mk_create_coll_on_stat(uv_fs_t *req)
 {
     uv_stat_t *stat = (uv_stat_t *) req->ptr;
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
@@ -74,8 +74,24 @@ void mk_create_coll_on_stat(uv_fs_t *req)
     uv_fs_open(uv_default_loop(), context->open_req, context->path, O_RDWR | O_CREAT, 0644, mk_create_coll_on_open);
 }
 
-int mk_create_coll(mk_ast_node *node)
+int mk_create_coll(mk_session *session, mk_ast_node *node)
 {
+    if (session->db == NULL) {
+        fprintf(stderr, "No database selected\n");
+        return FAILURE;
+    }
+
+    node->value[node->len] = '\0';
+
+    mk_db *db = session->db;
+    
+    for (int i = 0; i < db->number; i++) {
+        if (!strcmp(node->value, db->collections[i]->name)) {
+            fprintf(stderr, "Collection '%s' already exists\n", node->value);
+            return FAILURE;
+        }
+    }
+
     mk_create_coll_context *context = malloc(sizeof(mk_create_coll_context));
 
     context->stat_req = malloc(sizeof(uv_fs_t));

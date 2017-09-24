@@ -15,6 +15,7 @@ static void mk_open_db_on_scandir(uv_fs_t *req)
     db->name = context->name;
     db->name_len = context->name_len;
     db->collections = malloc(sizeof(mk_collection *) * 16);
+    db->number = 0;
 
     int i = 0;
     while (UV_EOF != uv_fs_scandir_next(req, dent)) {
@@ -31,7 +32,7 @@ static void mk_open_db_on_scandir(uv_fs_t *req)
     free(dent);
 
     if (context->cb != NULL) {
-        (context->cb)(db);
+        (context->cb)(context->session, db);
     }
 
     free(context);
@@ -61,7 +62,7 @@ static void mk_open_db_on_stat(uv_fs_t *req)
     uv_fs_scandir(uv_default_loop(), context->scan_req, context->path, 0, mk_open_db_on_scandir);
 }
 
-int mk_open_db(mk_ast_node *node, on_open_db_cb *cb)
+int mk_open_db(mk_session *session, mk_ast_node *node, on_open_db_cb *cb)
 {
     mk_open_db_context *context = malloc(sizeof(mk_open_db_context));
 
@@ -69,7 +70,9 @@ int mk_open_db(mk_ast_node *node, on_open_db_cb *cb)
     snprintf(context->path, 256, "%s/%s", MK_DATA_DIR, node->value);
     fprintf(stderr, "%d %s %s\n", node->type, context->path, node->value);
 
+    context->session = session;
     context->cb = cb;
+
     context->stat_req = malloc(sizeof(uv_fs_t));
     context->stat_req->data = context;
 

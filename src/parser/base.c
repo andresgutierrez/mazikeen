@@ -34,7 +34,7 @@ static void mk_parse_with_token(void* mk_parser, int opcode, int parsercode, mk_
 	token->len = 0;
 }
 
-mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_path, char **error_msg)
+mk_ast_node *mk_parse_command(const char *program, size_t program_length, char *file_path, char **error_msg)
 {
 	char *error;
 	mk_scanner_state *state;
@@ -62,7 +62,7 @@ mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_p
 	 * Initialize the scanner state
 	 */
 	state->active_token = 0;
-	state->start = program;
+	state->start = (char *) program;
 	state->start_length = 0;
 	state->active_file = file_path;
 	state->active_line = 1;

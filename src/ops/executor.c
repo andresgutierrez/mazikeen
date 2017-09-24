@@ -1,12 +1,18 @@
 
 #include "../mk.h"
 
-void on_open_db(mk_db *db)
+void on_open_db(mk_session *session, mk_db *db)
 {
-    fprintf(stderr, "%s\n", db->name);
+    session->db = db;
+    /*fprintf(stderr, "%s %d\n", db->name,  db->number);
+    for (int i = 0; i < db->number; i++) {
+        fprintf(stderr, "%s\n", db->collections[i]->name);
+    }*/
+
+    mk_execute_command_str(session, MK_STRL("create collection x (a, b, c)"));
 }
 
-void mk_execute_command(mk_ast_node *node)
+int mk_execute_command(mk_session *session, mk_ast_node *node)
 {
     switch (node->type) {
 
@@ -14,14 +20,28 @@ void mk_execute_command(mk_ast_node *node)
             break;
 
         case MK_AST_T_CREATE_COLL:
-            mk_create_coll(node);
-            break;
+            return mk_create_coll(session, node);
 
         case MK_AST_T_OPEN_DB:
-            mk_open_db(node, on_open_db);
-            break;
+            return mk_open_db(session, node, on_open_db);
 
         default:
             fprintf(stderr, "Unknown Command=%d\n", node->type);
     }
+
+    return FAILURE;
+}
+
+int mk_execute_command_str(mk_session *session, const char *command, int command_len)
+{
+    char *error_msg = NULL;
+
+    mk_ast_node *root = mk_parse_command(command, command_len, "a.x", &error_msg);
+    if (root == NULL)
+    {
+        fprintf(stderr, "Error=%s\n", error_msg);
+        return FAILURE;
+    }
+
+    return mk_execute_command(session, root);
 }
