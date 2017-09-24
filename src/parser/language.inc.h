@@ -24,6 +24,15 @@ static mk_ast_node *mk_ret_coll_field_def(mk_parser_token *T)
     return node;
 }
 
+static mk_ast_node *mk_ret_open_db(mk_parser_token *C)
+{
+    mk_ast_node *node = malloc(sizeof(mk_ast_node));
+    node->type = MK_AST_T_OPEN_DB;
+    node->value = C->token;
+    node->len = C->token_len;
+    return node;
+}
+
 static mk_ast_node *mk_ret_insert(mk_parser_token *I, mk_ast_node *values)
 {
     mk_ast_node *node = malloc(sizeof(mk_ast_node));

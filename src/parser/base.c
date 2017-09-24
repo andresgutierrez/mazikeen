@@ -105,6 +105,10 @@ mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_p
 				mk_(mk_parser, MK_COLLECTION, NULL, parser_status);
 				break;
 
+			case MK_T_USE:
+				mk_(mk_parser, MK_USE, NULL, parser_status);
+				break;
+
 			case MK_T_PARENTHESES_OPEN:
 				mk_(mk_parser, MK_PARENTHESES_OPEN, NULL, parser_status);
 				break;

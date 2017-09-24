@@ -19,12 +19,20 @@ mk_language ::= mk_command(C) . {
 	status->ret = C;
 }
 
+mk_command(R) ::= mk_open_db(I) . {
+	R = I;
+}
+
 mk_command(R) ::= mk_insert(I) . {
 	R = I;
 }
 
 mk_command(R) ::= mk_create_coll(I) . {
 	R = I;
+}
+
+mk_open_db(R) ::= USE IDENTIFIER(I) . {
+	R = mk_ret_open_db(I);
 }
 
 mk_insert(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_list(T) PARENTHESES_CLOSE . {

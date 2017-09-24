@@ -64,9 +64,12 @@ typedef struct _mk_parser_status {
 #define SUCCESS 1
 #define FAILURE 0
 
-#define MK_AST_T_INSERT 0
-#define MK_AST_T_LIST 1
-#define MK_AST_T_CREATE_COLL 2
+#define MK_AST_T_OPEN_DB 0
+#define MK_AST_T_CREATE_DB 1
+
+#define MK_AST_T_INSERT 2
+#define MK_AST_T_LIST 3
+#define MK_AST_T_CREATE_COLL 4
 
 mk_ast_node *mk_parse_command(char *program, size_t program_length, char *file_path, char **error_msg);
 int mk_get_token(mk_scanner_state *state, mk_scanner_token *token);

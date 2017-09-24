@@ -57,23 +57,23 @@
 **                       defined, then do no error processing.
 */
 #define YYCODETYPE unsigned char
-#define YYNOCODE 21
+#define YYNOCODE 23
 #define YYACTIONTYPE unsigned char
 #define mk_TOKENTYPE mk_parser_token*
 typedef union {
   mk_TOKENTYPE yy0;
-  mk_ast_node* yy15;
-  int yy41;
+  mk_ast_node* yy23;
+  int yy45;
 } YYMINORTYPE;
 #define YYSTACKDEPTH 100
 #define mk_ARG_SDECL mk_parser_status *status;
 #define mk_ARG_PDECL ,mk_parser_status *status
 #define mk_ARG_FETCH mk_parser_status *status = yypParser->status
 #define mk_ARG_STORE yypParser->status = status
-#define YYNSTATE 25
-#define YYNRULE 11
-#define YYERRORSYMBOL 11
-#define YYERRSYMDT yy41
+#define YYNSTATE 28
+#define YYNRULE 13
+#define YYERRORSYMBOL 12
+#define YYERRSYMDT yy45
 #define YY_NO_ACTION      (YYNSTATE+YYNRULE+2)
 #define YY_ACCEPT_ACTION  (YYNSTATE+YYNRULE+1)
 #define YY_ERROR_ACTION   (YYNSTATE+YYNRULE)
@@ -126,31 +126,33 @@ typedef union {
 **  yy_default[]       Default action for each state.
 */
 static YYACTIONTYPE yy_action[] = {
- /*     0 */    37,    1,    2,    3,   20,   10,    9,   21,   11,   14,
- /*    10 */    19,   24,    4,    7,   25,   26,   27,    8,   15,    5,
- /*    20 */    13,   28,    6,   12,   22,   17,   16,   23,   18,   29,
+ /*     0 */    42,    1,    2,    3,    4,    5,   13,    7,   29,   14,
+ /*    10 */    22,   27,   18,   12,   23,   19,   17,   24,   20,   11,
+ /*    20 */    21,    6,   15,   16,   34,   26,   28,   33,   32,   25,
+ /*    30 */    30,   31,   37,    8,   37,   37,    9,   10,
 };
 static YYCODETYPE yy_lookahead[] = {
- /*     0 */    12,   13,   14,   15,    6,    6,   16,    9,    9,   19,
- /*    10 */    17,   18,    1,    4,    0,    0,    0,    5,    7,    2,
- /*    20 */    10,    0,    3,   19,   18,    3,    8,    3,    5,    0,
+ /*     0 */    13,   14,   15,   16,   17,    1,    7,    3,    0,   10,
+ /*    10 */    19,   20,    8,   18,    7,    9,   21,   10,    2,    6,
+ /*    20 */     6,    2,   21,   11,    0,    2,    0,    0,    0,   20,
+ /*    30 */     0,    0,   22,    4,   22,   22,    2,    5,
 };
-#define YY_SHIFT_USE_DFLT (-3)
+#define YY_SHIFT_USE_DFLT (-2)
 static signed char yy_shift_ofst[] = {
- /*     0 */    11,   14,   15,   16,   17,   19,    9,   12,   10,   -1,
- /*    10 */    21,   10,   -3,   -3,   -3,   18,   22,   23,   24,   -2,
- /*    20 */    29,   24,   -3,   -3,   -3,
+ /*     0 */     4,   26,    8,   30,   31,   19,   28,   29,   34,   32,
+ /*    10 */    13,   12,   -1,   27,   12,   -2,   -2,   -2,    6,   16,
+ /*    20 */    14,   23,    7,   24,   23,   -2,   -2,   -2,
 };
-#define YY_REDUCE_USE_DFLT (-13)
+#define YY_REDUCE_USE_DFLT (-14)
 static signed char yy_reduce_ofst[] = {
- /*     0 */   -12,  -13,  -13,  -13,  -13,  -13,  -13,  -13,  -10,  -13,
- /*    10 */   -13,    4,  -13,  -13,  -13,  -13,  -13,  -13,   -7,  -13,
- /*    20 */   -13,    6,  -13,  -13,  -13,
+ /*     0 */   -13,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,  -14,
+ /*    10 */   -14,   -5,  -14,  -14,    1,  -14,  -14,  -14,  -14,  -14,
+ /*    20 */   -14,   -9,  -14,  -14,    9,  -14,  -14,  -14,
 };
 static YYACTIONTYPE yy_default[] = {
- /*     0 */    36,   36,   36,   36,   36,   36,   36,   36,   36,   36,
- /*    10 */    36,   36,   33,   35,   34,   36,   36,   36,   36,   36,
- /*    20 */    36,   36,   30,   32,   31,
+ /*     0 */    41,   41,   41,   41,   41,   41,   41,   41,   41,   41,
+ /*    10 */    41,   41,   41,   41,   41,   38,   40,   39,   41,   41,
+ /*    20 */    41,   41,   41,   41,   41,   35,   37,   36,
 };
 #define YY_SZ_ACTTAB (sizeof(yy_action)/sizeof(yy_action[0]))
 
@@ -236,11 +238,12 @@ void mk_Trace(FILE *TraceFILE, char *zTracePrompt){
 /* For tracing shifts, the names of all terminals and nonterminals
 ** are required.  The following table supplies these names */
 static const char *yyTokenName[] = {
-  "$",             "INSERT",        "INTO",          "IDENTIFIER",  
-  "VALUES",        "PARENTHESES_OPEN",  "PARENTHESES_CLOSE",  "CREATE",      
-  "COLLECTION",    "COMMA",         "INTEGER",       "error",       
-  "mk_language",   "mk_command",    "mk_insert",     "mk_create_coll",
-  "mk_values_list",  "mk_create_coll_field_list",  "mk_create_coll_field",  "mk_expr",     
+  "$",             "USE",           "IDENTIFIER",    "INSERT",      
+  "INTO",          "VALUES",        "PARENTHESES_OPEN",  "PARENTHESES_CLOSE",
+  "CREATE",        "COLLECTION",    "COMMA",         "INTEGER",     
+  "error",         "mk_language",   "mk_command",    "mk_open_db",  
+  "mk_insert",     "mk_create_coll",  "mk_values_list",  "mk_create_coll_field_list",
+  "mk_create_coll_field",  "mk_expr",     
 };
 #endif /* NDEBUG */
 
@@ -249,16 +252,18 @@ static const char *yyTokenName[] = {
 */
 static const char *yyRuleName[] = {
  /*   0 */ "mk_language ::= mk_command",
- /*   1 */ "mk_command ::= mk_insert",
- /*   2 */ "mk_command ::= mk_create_coll",
- /*   3 */ "mk_insert ::= INSERT INTO IDENTIFIER VALUES PARENTHESES_OPEN mk_values_list PARENTHESES_CLOSE",
- /*   4 */ "mk_create_coll ::= CREATE COLLECTION IDENTIFIER PARENTHESES_OPEN mk_create_coll_field_list PARENTHESES_CLOSE",
- /*   5 */ "mk_create_coll_field_list ::= mk_create_coll_field_list COMMA mk_create_coll_field",
- /*   6 */ "mk_create_coll_field_list ::= mk_create_coll_field",
- /*   7 */ "mk_create_coll_field ::= IDENTIFIER",
- /*   8 */ "mk_values_list ::= mk_values_list COMMA mk_expr",
- /*   9 */ "mk_values_list ::= mk_expr",
- /*  10 */ "mk_expr ::= INTEGER",
+ /*   1 */ "mk_command ::= mk_open_db",
+ /*   2 */ "mk_command ::= mk_insert",
+ /*   3 */ "mk_command ::= mk_create_coll",
+ /*   4 */ "mk_open_db ::= USE IDENTIFIER",
+ /*   5 */ "mk_insert ::= INSERT INTO IDENTIFIER VALUES PARENTHESES_OPEN mk_values_list PARENTHESES_CLOSE",
+ /*   6 */ "mk_create_coll ::= CREATE COLLECTION IDENTIFIER PARENTHESES_OPEN mk_create_coll_field_list PARENTHESES_CLOSE",
+ /*   7 */ "mk_create_coll_field_list ::= mk_create_coll_field_list COMMA mk_create_coll_field",
+ /*   8 */ "mk_create_coll_field_list ::= mk_create_coll_field",
+ /*   9 */ "mk_create_coll_field ::= IDENTIFIER",
+ /*  10 */ "mk_values_list ::= mk_values_list COMMA mk_expr",
+ /*  11 */ "mk_values_list ::= mk_expr",
+ /*  12 */ "mk_expr ::= INTEGER",
 };
 #endif /* NDEBUG */
 
@@ -490,17 +495,19 @@ static struct {
   YYCODETYPE lhs;         /* Symbol on the left-hand side of the rule */
   unsigned char nrhs;     /* Number of right-hand side symbols in the rule */
 } yyRuleInfo[] = {
-  { 12, 1 },
   { 13, 1 },
-  { 13, 1 },
-  { 14, 7 },
-  { 15, 6 },
-  { 17, 3 },
-  { 17, 1 },
-  { 18, 1 },
-  { 16, 3 },
-  { 16, 1 },
+  { 14, 1 },
+  { 14, 1 },
+  { 14, 1 },
+  { 15, 2 },
+  { 16, 7 },
+  { 17, 6 },
+  { 19, 3 },
   { 19, 1 },
+  { 20, 1 },
+  { 18, 3 },
+  { 18, 1 },
+  { 21, 1 },
 };
 
 static void yy_accept(yyParser*);  /* Forward Declaration */
@@ -540,61 +547,69 @@ static void yy_reduce(
       case 0:
 #line 18 "language.lemon"
 {
-	status->ret = yymsp[0].minor.yy15;
+	status->ret = yymsp[0].minor.yy23;
 }
-#line 546 "language.c"
+#line 553 "language.c"
         break;
       case 1:
       case 2:
+      case 3:
 #line 22 "language.lemon"
 {
-	yygotominor.yy15 = yymsp[0].minor.yy15;
+	yygotominor.yy23 = yymsp[0].minor.yy23;
 }
-#line 554 "language.c"
-        break;
-      case 3:
-#line 30 "language.lemon"
-{
-	yygotominor.yy15 = mk_ret_insert(yymsp[-4].minor.yy0, yymsp[-1].minor.yy15);
-}
-#line 561 "language.c"
+#line 562 "language.c"
         break;
       case 4:
 #line 34 "language.lemon"
 {
-	yygotominor.yy15 = mk_ret_create_coll(yymsp[-3].minor.yy0, yymsp[-1].minor.yy15);
+	yygotominor.yy23 = mk_ret_open_db(yymsp[0].minor.yy0);
 }
-#line 568 "language.c"
+#line 569 "language.c"
         break;
       case 5:
-      case 8:
 #line 38 "language.lemon"
 {
-	yygotominor.yy15 = mk_ret_list(yymsp[-2].minor.yy15, yymsp[0].minor.yy15);
+	yygotominor.yy23 = mk_ret_insert(yymsp[-4].minor.yy0, yymsp[-1].minor.yy23);
 }
 #line 576 "language.c"
         break;
       case 6:
-      case 9:
 #line 42 "language.lemon"
 {
-	yygotominor.yy15 = mk_ret_list(yymsp[0].minor.yy15, NULL);
+	yygotominor.yy23 = mk_ret_create_coll(yymsp[-3].minor.yy0, yymsp[-1].minor.yy23);
 }
-#line 584 "language.c"
+#line 583 "language.c"
         break;
       case 7:
+      case 10:
 #line 46 "language.lemon"
 {
-	yygotominor.yy15 = mk_ret_coll_field_def(yymsp[0].minor.yy0);
+	yygotominor.yy23 = mk_ret_list(yymsp[-2].minor.yy23, yymsp[0].minor.yy23);
 }
 #line 591 "language.c"
         break;
-      case 10:
-#line 58 "language.lemon"
+      case 8:
+      case 11:
+#line 50 "language.lemon"
 {
-    yygotominor.yy15 = mk_ret_literal(MK_T_INTEGER, yymsp[0].minor.yy0);
+	yygotominor.yy23 = mk_ret_list(yymsp[0].minor.yy23, NULL);
 }
-#line 598 "language.c"
+#line 599 "language.c"
+        break;
+      case 9:
+#line 54 "language.lemon"
+{
+	yygotominor.yy23 = mk_ret_coll_field_def(yymsp[0].minor.yy0);
+}
+#line 606 "language.c"
+        break;
+      case 12:
+#line 66 "language.lemon"
+{
+    yygotominor.yy23 = mk_ret_literal(MK_T_INTEGER, yymsp[0].minor.yy0);
+}
+#line 613 "language.c"
         break;
   };
   yygoto = yyRuleInfo[yyruleno].lhs;
@@ -642,7 +657,7 @@ static void yy_syntax_error(
 	status->status = MK_PARSING_FAILED;
 	status->ret = NULL;
 
-#line 646 "language.c"
+#line 661 "language.c"
   mk_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 

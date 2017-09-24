@@ -38,6 +38,8 @@
 #define MK_T_VALUES 352
 #define MK_T_CREATE 353
 #define MK_T_COLLECTION 354
+#define MK_T_USE 355
+#define MK_T_DATABASE 356
 
 /* Operators */
 #define MK_T_AT '@'

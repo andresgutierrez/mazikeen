@@ -88,6 +88,18 @@ int mk_get_token(mk_scanner_state *s, mk_scanner_token *token) {
 			return 0;
 		}
 
+		'use' {
+			s->active_char += sizeof("use")-1;
+			token->opcode = MK_T_USE;
+			return 0;
+		}
+
+		'database' {
+			s->active_char += sizeof("database")-1;
+			token->opcode = MK_T_DATABASE;
+			return 0;
+		}
+
 		SCHAR = (['] ([\\][']|[\\].|[\001-\377]\[\\'])* [']);
 		SCHAR {
 			token->opcode = MK_T_CHAR;
