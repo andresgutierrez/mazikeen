@@ -33,10 +33,12 @@ static mk_ast_node *mk_ret_open_db(mk_parser_token *C)
     return node;
 }
 
-static mk_ast_node *mk_ret_insert(mk_parser_token *I, mk_ast_node *values)
+static mk_ast_node *mk_ret_insert(mk_parser_token *C, mk_ast_node *values)
 {
     mk_ast_node *node = malloc(sizeof(mk_ast_node));
     node->type = MK_AST_T_INSERT;
+    node->value = C->token;
+    node->len = C->token_len;
     node->n0 = values;
     return node;
 }

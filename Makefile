@@ -5,11 +5,17 @@ LDFLAGS=-L/opt/local/lib -luv
 
 default: mazikeen
 
-mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o src/ops/executor.o src/ops/create-coll.o src/ops/open-db.o
-	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o src/ops/executor.o src/ops/create-coll.o src/ops/open-db.o -o mazikeen
+mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o src/ops/executor.o src/ops/create-coll.o \
+		src/ops/open-db.o src/ops/insert.o src/engine/memory.o
+	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o src/ops/executor.o \
+		src/ops/create-coll.o src/ops/open-db.o src/ops/insert.o src/engine/memory.o -o mazikeen
 
 src/m.o: src/m.c src/mk.h
 	$(CC) $(CFLAGS) -c src/m.c -o src/m.o
+
+# engine
+src/engine/memory.o: src/engine/memory.c src/mk.h src/engine/memory.h
+	$(CC) $(CFLAGS) -c src/engine/memory.c -o src/engine/memory.o
 
 # executor
 src/ops/executor.o: src/ops/executor.c src/mk.h src/ops/executor.h
@@ -21,7 +27,10 @@ src/ops/create-coll.o: src/ops/create-coll.c src/ops/executor.h
 src/ops/open-db.o: src/ops/open-db.c src/ops/executor.h
 	$(CC) $(CFLAGS) -c src/ops/open-db.c -o src/ops/open-db.o
 
-# Parser
+src/ops/insert.o: src/ops/insert.c src/ops/executor.h
+	$(CC) $(CFLAGS) -c src/ops/insert.c -o src/ops/insert.o
+
+# parser
 src/parser/parser.o: src/parser/parser.c src/mk.h src/parser/parser.h
 	$(CC) $(CFLAGS) -c src/parser/parser.c -o src/parser/parser.o
 

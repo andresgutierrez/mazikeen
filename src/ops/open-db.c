@@ -19,10 +19,17 @@ static void mk_open_db_on_scandir(uv_fs_t *req)
 
     int i = 0;
     while (UV_EOF != uv_fs_scandir_next(req, dent)) {
+
         int length = strlen(dent->name);
+
         mk_collection *collection = (mk_collection*) malloc(sizeof(mk_collection));
         collection->name = strndup(dent->name, length);
         collection->name_len = length;
+        collection->path = malloc(sizeof(char) * 256);
+        collection->append_page_offset = 0;
+
+        snprintf(collection->path, 256, "%s/%s/%s", MK_DATA_DIR, db->name, dent->name);
+
         db->collections[i++] = collection;
         db->number++;
     }

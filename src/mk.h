@@ -8,6 +8,8 @@
 typedef struct _mk_collection {
     char *name;
     int name_len;
+    char *path;
+    size_t append_page_offset;
 } mk_collection;
 
 typedef struct _mk_db {
@@ -18,11 +20,12 @@ typedef struct _mk_db {
 } mk_db;
 
 typedef struct _mk_session {
-    mk_db *db;    
+    mk_db *db;
 } mk_session;
 
 #include "parser/parser.h"
 #include "ops/executor.h"
+#include "engine/memory.h"
 
 #define MK_DATA_DIR "data"
 #define MK_DEFAULT_DB "test"

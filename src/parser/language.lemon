@@ -56,7 +56,7 @@ mk_create_coll_field(R) ::= IDENTIFIER(I) . {
 }
 
 mk_values_list(R) ::= mk_values_list(L) COMMA mk_expr(I) . {
-	R = mk_ret_list(L, I);
+	R = mk_ret_list(I, L);
 }
 
 mk_values_list(R) ::= mk_expr(I) . {
@@ -64,5 +64,5 @@ mk_values_list(R) ::= mk_expr(I) . {
 }
 
 mk_expr(R) ::= INTEGER(I) . {
-    R = mk_ret_literal(MK_T_INTEGER, I);
+    R = mk_ret_literal(MK_AST_T_INTEGER, I);
 }

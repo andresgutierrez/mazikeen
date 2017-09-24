@@ -1,5 +1,4 @@
 
-#include <uv.h>
 #include "../mk.h"
 
 static void mk_create_coll_cleanup(mk_create_coll_context *context)
@@ -76,20 +75,16 @@ static void mk_create_coll_on_stat(uv_fs_t *req)
 
 int mk_create_coll(mk_session *session, mk_ast_node *node)
 {
-    if (session->db == NULL) {
+    mk_db *db = session->db;
+
+    if (db == NULL) {
         fprintf(stderr, "No database selected\n");
         return FAILURE;
     }
 
-    node->value[node->len] = '\0';
-
-    mk_db *db = session->db;
-    
-    for (int i = 0; i < db->number; i++) {
-        if (!strcmp(node->value, db->collections[i]->name)) {
-            fprintf(stderr, "Collection '%s' already exists\n", node->value);
-            return FAILURE;
-        }
+    if ((mk_get_collection(db, node->value, node->len)) != NULL) {
+        fprintf(stderr, "Collection '%s' already exists\n", node->value);
+        return FAILURE;
     }
 
     mk_create_coll_context *context = malloc(sizeof(mk_create_coll_context));

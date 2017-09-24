@@ -30,5 +30,8 @@ int mk_execute_command_str(mk_session *session, const char *command, int command
 
 int mk_create_coll(mk_session *session, mk_ast_node *node);
 int mk_open_db(mk_session *session, mk_ast_node *node, on_open_db_cb *cb);
+int mk_insert_into_coll(mk_session *session, mk_ast_node *node);
+
+mk_collection *mk_get_collection(mk_db *db, const char *name, int name_len);
 
 #endif

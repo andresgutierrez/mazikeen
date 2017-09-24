@@ -9,7 +9,7 @@ void on_open_db(mk_session *session, mk_db *db)
         fprintf(stderr, "%s\n", db->collections[i]->name);
     }*/
 
-    mk_execute_command_str(session, MK_STRL("create collection x (a, b, c)"));
+    mk_execute_command_str(session, MK_STRL("insert into x values (1, 2, 3)"));
 }
 
 int mk_execute_command(mk_session *session, mk_ast_node *node)
@@ -17,7 +17,7 @@ int mk_execute_command(mk_session *session, mk_ast_node *node)
     switch (node->type) {
 
         case MK_AST_T_INSERT:
-            break;
+            return mk_insert_into_coll(session, node);
 
         case MK_AST_T_CREATE_COLL:
             return mk_create_coll(session, node);
@@ -44,4 +44,18 @@ int mk_execute_command_str(mk_session *session, const char *command, int command
     }
 
     return mk_execute_command(session, root);
+}
+
+mk_collection *mk_get_collection(mk_db *db, const char *name, int name_len)
+{
+    for (int i = 0; i < db->number; i++) {
+        mk_collection *collection = db->collections[i];
+        if (name_len != collection->name_len) {
+            continue;
+        }
+        if (!strcmp(name, collection->name)) {
+            return collection;
+        }
+    }
+    return NULL;
 }

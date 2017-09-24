@@ -582,12 +582,11 @@ static void yy_reduce(
 #line 583 "language.c"
         break;
       case 7:
-      case 10:
 #line 46 "language.lemon"
 {
 	yygotominor.yy23 = mk_ret_list(yymsp[-2].minor.yy23, yymsp[0].minor.yy23);
 }
-#line 591 "language.c"
+#line 590 "language.c"
         break;
       case 8:
       case 11:
@@ -595,21 +594,28 @@ static void yy_reduce(
 {
 	yygotominor.yy23 = mk_ret_list(yymsp[0].minor.yy23, NULL);
 }
-#line 599 "language.c"
+#line 598 "language.c"
         break;
       case 9:
 #line 54 "language.lemon"
 {
 	yygotominor.yy23 = mk_ret_coll_field_def(yymsp[0].minor.yy0);
 }
-#line 606 "language.c"
+#line 605 "language.c"
+        break;
+      case 10:
+#line 58 "language.lemon"
+{
+	yygotominor.yy23 = mk_ret_list(yymsp[0].minor.yy23, yymsp[-2].minor.yy23);
+}
+#line 612 "language.c"
         break;
       case 12:
 #line 66 "language.lemon"
 {
-    yygotominor.yy23 = mk_ret_literal(MK_T_INTEGER, yymsp[0].minor.yy0);
+    yygotominor.yy23 = mk_ret_literal(MK_AST_T_INTEGER, yymsp[0].minor.yy0);
 }
-#line 613 "language.c"
+#line 619 "language.c"
         break;
   };
   yygoto = yyRuleInfo[yyruleno].lhs;
@@ -657,7 +663,7 @@ static void yy_syntax_error(
 	status->status = MK_PARSING_FAILED;
 	status->ret = NULL;
 
-#line 661 "language.c"
+#line 667 "language.c"
   mk_ARG_STORE; /* Suppress warning about unused %extra_argument variable */
 }
 
