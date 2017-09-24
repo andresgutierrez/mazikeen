@@ -6,6 +6,10 @@ static void mk_create_coll_cleanup(mk_create_coll_context *context)
     uv_fs_req_cleanup(context->open_req);
     uv_fs_req_cleanup(context->close_req);
 
+    if (context->cb != NULL) {
+        (context->cb)(context->session);
+    }
+
     free(context->open_req);
     free(context->close_req);
     free(context->path);
@@ -17,7 +21,7 @@ static void mk_create_coll_close_cb(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (req->result < 0) {
-        fprintf(stderr, "error closing file: %s\n", uv_strerror((int)req->result));
+        fprintf(stderr, "Error closing file: %s\n", uv_strerror((int)req->result));
         return;
     }
 
@@ -29,7 +33,7 @@ static void mk_create_coll_write_cb(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (req->result < 0) {
-        fprintf(stderr, "error writing to file: %s\n", uv_strerror((int)req->result));
+        fprintf(stderr, "Error writing to file: %s\n", uv_strerror((int)req->result));
         return;
     }
 
@@ -44,7 +48,7 @@ static void mk_create_coll_on_open(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (req->result < 0) {
-        fprintf(stderr, "error opening file: %s\n", uv_strerror((int)req->result));
+        fprintf(stderr, "Error opening file: %s\n", uv_strerror((int)req->result));
         return;
     }
 
@@ -58,7 +62,7 @@ static void mk_create_coll_on_stat(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (stat != NULL) {
-        fprintf(stderr, "Collection '%s' already exists\n", context->path);
+        fprintf(stderr, "Error: Collection '%s' already exists\n", context->path);
         return;
     }
 
@@ -73,21 +77,24 @@ static void mk_create_coll_on_stat(uv_fs_t *req)
     uv_fs_open(uv_default_loop(), context->open_req, context->path, O_RDWR | O_CREAT, 0644, mk_create_coll_on_open);
 }
 
-int mk_create_coll(mk_session *session, mk_ast_node *node)
+int mk_create_coll(mk_session *session, mk_ast_node *node, on_execute_succeed *cb)
 {
     mk_db *db = session->db;
 
     if (db == NULL) {
-        fprintf(stderr, "No database selected\n");
+        fprintf(stderr, "Error: No database selected\n");
         return FAILURE;
     }
 
     if ((mk_get_collection(db, node->value, node->len)) != NULL) {
-        fprintf(stderr, "Collection '%s' already exists\n", node->value);
+        fprintf(stderr, "Error: Collection '%s' already exists\n", node->value);
         return FAILURE;
     }
 
     mk_create_coll_context *context = malloc(sizeof(mk_create_coll_context));
+    
+    context->session = session;
+    context->cb = cb;
 
     context->stat_req = malloc(sizeof(uv_fs_t));
     context->stat_req->data = context;

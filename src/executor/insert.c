@@ -1,12 +1,6 @@
 
 #include "../mk.h"
 
-typedef struct mk_insert_open_coll_context {
-    mk_session *session;
-    mk_ast_node *node;
-    mk_collection *collection;
-} mk_insert_open_coll_context;
-
 static void mk_write_value_to_record(mk_document *document, mk_ast_node *value)
 {
     switch (value->type) {
@@ -57,7 +51,7 @@ static void mk_insert_on_open_coll(mk_open_coll_request *req)
     free(req);
 }
 
-int mk_insert_into_coll(mk_session *session, mk_ast_node *node)
+int mk_insert_into_coll(mk_session *session, mk_ast_node *node, on_execute_succeed *cb)
 {
     mk_db *db = session->db;
 
@@ -76,6 +70,7 @@ int mk_insert_into_coll(mk_session *session, mk_ast_node *node)
     mk_insert_open_coll_context *context = (mk_insert_open_coll_context *) malloc(sizeof(mk_insert_open_coll_context));
 
     context->session = session;
+    context->cb = cb;
     context->node = node;
     context->collection = collection;
 

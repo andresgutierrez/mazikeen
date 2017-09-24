@@ -40,8 +40,10 @@ static void mk_open_db_on_scandir(uv_fs_t *req)
     free(context->scan_req);
     free(dent);
 
+    context->session->db = db;
+
     if (context->cb != NULL) {
-        (context->cb)(context->session, db);
+        (context->cb)(context->session);
     }
 
     free(context);
@@ -71,7 +73,7 @@ static void mk_open_db_on_stat(uv_fs_t *req)
     uv_fs_scandir(uv_default_loop(), context->scan_req, context->path, 0, mk_open_db_on_scandir);
 }
 
-int mk_open_db(mk_session *session, mk_ast_node *node, on_open_db_cb *cb)
+int mk_open_db(mk_session *session, mk_ast_node *node, on_execute_succeed *cb)
 {
     mk_open_db_context *context = malloc(sizeof(mk_open_db_context));
 
