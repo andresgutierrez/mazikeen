@@ -12,15 +12,15 @@ static inline void mk_pack_type(mk_document *document, uint8_t type)
 		byteType = (byteType & 0xf0) | (type - 0xf);
 	}
 
-    memcpy(document->buffer + document->pointer, &byteType, sizeof(uint8_t));
-    document->pointer++;
+	memcpy(document->buffer + document->pointer, &byteType, sizeof(uint8_t));
+	document->pointer++;
 }
 
 void mk_pack_long(mk_document *document, long number)
 {
-    mk_pack_type(document, MK_TYPE_LONG);
-    memcpy(document->buffer + document->pointer, &number, sizeof(long));
-    document->pointer += sizeof(long);
+	mk_pack_type(document, MK_TYPE_LONG);
+	memcpy(document->buffer + document->pointer, &number, sizeof(long));
+	document->pointer += sizeof(long);
 }
 
 static uint8_t mk_parse_type(mk_document *document)
@@ -40,7 +40,7 @@ void mk_unpack_value(mk_document *document)
 	document->pointer = 0;
 	fprintf(stderr, "%d\n", mk_parse_type(document));
 
-    /*mk_pack_type(document, MK_TYPE_LONG);
-    memcpy(document->buffer + document->pointer, &number, sizeof(long));
-    document->pointer += sizeof(long);*/
+	/*mk_pack_type(document, MK_TYPE_LONG);
+	memcpy(document->buffer + document->pointer, &number, sizeof(long));
+	document->pointer += sizeof(long);*/
 }
