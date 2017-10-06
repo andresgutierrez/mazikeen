@@ -12,7 +12,7 @@
 
 typedef struct _mk_document {
 	int pointer;
-	uint8_t buffer[MK_DOCUMENT_SIZE - sizeof(int) * 2];
+	uint8_t buffer[MK_DOCUMENT_SIZE - sizeof(int)];
 } mk_document;
 
 typedef struct _mk_collection {

@@ -15,9 +15,19 @@ static void mk_dump_fetch_documents(mk_reader_context *context)
 {
     mk_document *document = malloc(sizeof(mk_document));
     memcpy(document, context->iov.base, sizeof(mk_document));
-    fprintf(stderr, "%d\n", document->pointer);
-    (context->cb)(document);
-    //fprintf(stderr, "%.*s %zu\n", (int)context->iov.len, context->iov.base, context->iov.len);
+    if (context->cb != NULL) {
+        (context->cb)(document);
+    }
+    free(document);
+}
+
+static void mk_dump_cleanup(mk_reader_context *context)
+{
+    uv_fs_req_cleanup(context->read_req);
+
+    free(context->buffer);
+    free(context->read_req);
+    free(context);
 }
 
 static void mk_dump_documents_on_read(uv_fs_t *req)
@@ -30,7 +40,7 @@ static void mk_dump_documents_on_read(uv_fs_t *req)
 	}
 
 	if (req->result == 0) {
-		//mk_open_coll_on_fetch_page(context);
+		mk_dump_cleanup(context);
 		return;
 	}
 
