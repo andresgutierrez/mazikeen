@@ -7,10 +7,10 @@ default: mazikeen
 
 mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o src/executor/executor.o src/executor/create-coll.o \
 		src/executor/open-db.o src/executor/open-coll.o \
-		src/executor/insert.o src/engine/memory.o src/engine/packer.o src/engine/writer.o
+		src/executor/insert.o src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o
 	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o src/executor/executor.o \
 		src/executor/create-coll.o src/executor/open-db.o src/executor/open-coll.o src/executor/insert.o \
-		src/engine/memory.o src/engine/packer.o src/engine/writer.o -o mazikeen
+		src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o -o mazikeen
 
 src/m.o: src/m.c src/mk.h
 	$(CC) $(CFLAGS) -c src/m.c -o src/m.o
@@ -24,6 +24,9 @@ src/engine/packer.o: src/engine/packer.c src/mk.h src/engine/packer.h src/engine
 
 src/engine/writer.o: src/engine/writer.c src/mk.h src/engine/writer.h src/engine/engine.h
 	$(CC) $(CFLAGS) -c src/engine/writer.c -o src/engine/writer.o
+
+src/engine/reader.o: src/engine/reader.c src/mk.h src/engine/reader.h src/engine/engine.h
+	$(CC) $(CFLAGS) -c src/engine/reader.c -o src/engine/reader.o
 
 # executor
 src/executor/executor.o: src/executor/executor.c src/mk.h src/executor/executor.h

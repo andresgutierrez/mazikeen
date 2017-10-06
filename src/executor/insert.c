@@ -36,9 +36,7 @@ static void mk_insert_on_open_coll(mk_open_coll_request *req)
     } while (value != NULL);
 
     mk_document *document = malloc(sizeof(mk_document));
-    document->pointer = 0;
-    document->buffer = malloc(MK_DOCUMENT_SIZE);
-    document->buffer_len = MK_DOCUMENT_SIZE;
+    document->pointer = 0;    
 
     for (int i = 0; i < number; i++) {
         mk_write_value_to_record(document, values[i]);

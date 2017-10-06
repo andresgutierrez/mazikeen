@@ -5,10 +5,16 @@
 
 #include "mk.h"
 
+static void on_fetch_document(mk_document *document)
+{
+    mk_unpack_value(document);
+    fprintf(stderr, "Hello\n");
+}
+
 void on_insert_complete(mk_session *session)
 {
     //mk_execute_command_str(session, MK_STRL("insert into x values (4, 5, 6)"), on_insert_complete);
-    fprintf(stderr, "Hello\n");
+    mk_dump_documents_from_coll(session, mk_get_collection(session->db, "x", strlen("x")), on_fetch_document);
 }
 
 void on_use_test(mk_session *session)

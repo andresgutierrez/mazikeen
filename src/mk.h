@@ -11,9 +11,8 @@
 #include "engine/memory.h"
 
 typedef struct _mk_document {
-    int pointer;
-    int buffer_len;
-    uint8_t *buffer;
+    int pointer;    
+    uint8_t buffer[MK_DOCUMENT_SIZE - sizeof(int) * 2];
 } mk_document;
 
 typedef struct _mk_collection {

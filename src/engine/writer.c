@@ -34,8 +34,12 @@ void mk_append_document_to_coll(mk_collection *collection, mk_document *document
 {
     mk_page *writable_page = mk_get_writable_page(collection);
 
-    memcpy(writable_page->data + writable_page->pointer, document->buffer, document->buffer_len);
-    writable_page->pointer += document->pointer;
+#if MK_DEBUG
+    fprintf(stderr, "Set write pointer in %s to: %d\n", collection->name, writable_page->pointer);
+#endif
+
+    memcpy(writable_page->data + writable_page->pointer, document, sizeof(mk_document));
+    writable_page->pointer += sizeof(mk_document);
 
     mk_writer_context *context = (mk_writer_context *) malloc(sizeof(mk_writer_context));
 

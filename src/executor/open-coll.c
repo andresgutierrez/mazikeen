@@ -28,14 +28,14 @@ static void mk_open_coll_on_read(uv_fs_t *req)
 	}
 
 	if (req->result == MK_PAGE_SIZE) {
-#if MK_DEBUG
-		fprintf(stderr, "Restoring page from disk for: %s (%zd bytes)\n", context->collection->name, req->result);
-#endif
 		memcpy(
 			context->collection->writable_page,
 			context->iov.base,
 			req->result
 		);
+#if MK_DEBUG
+		fprintf(stderr, "Restored page from disk for: %s (%zd bytes) offset: %d\n", context->collection->name, req->result, context->collection->writable_page->pointer);
+#endif
 	}
 
 	mk_open_coll_on_fetch_page(context);
