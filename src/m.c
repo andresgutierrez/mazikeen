@@ -5,9 +5,15 @@
 
 #include "mk.h"
 
+void on_insert_complete(mk_session *session)
+{
+    //mk_execute_command_str(session, MK_STRL("insert into x values (4, 5, 6)"), on_insert_complete);
+    fprintf(stderr, "Hello\n");
+}
+
 void on_use_test(mk_session *session)
 {
-    mk_execute_command_str(session, MK_STRL("insert into x values (1, 2, 3)"), NULL);
+    mk_execute_command_str(session, MK_STRL("insert into x values (1, 2, 3)"), on_insert_complete);
 }
 
 int main(int argc, char **argv)

@@ -21,7 +21,7 @@ static void mk_create_coll_close_cb(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (req->result < 0) {
-        fprintf(stderr, "Error closing file: %s\n", uv_strerror((int)req->result));
+        fprintf(stderr, "Error: closing file: %s\n", uv_strerror((int)req->result));
         return;
     }
 
@@ -33,7 +33,7 @@ static void mk_create_coll_write_cb(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (req->result < 0) {
-        fprintf(stderr, "Error writing to file: %s\n", uv_strerror((int)req->result));
+        fprintf(stderr, "Error: writing to file: %s\n", uv_strerror((int)req->result));
         return;
     }
 
@@ -48,7 +48,7 @@ static void mk_create_coll_on_open(uv_fs_t *req)
     mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
     if (req->result < 0) {
-        fprintf(stderr, "Error opening file: %s\n", uv_strerror((int)req->result));
+        fprintf(stderr, "Error: opening file: %s\n", uv_strerror((int)req->result));
         return;
     }
 
@@ -92,7 +92,7 @@ int mk_create_coll(mk_session *session, mk_ast_node *node, on_execute_succeed *c
     }
 
     mk_create_coll_context *context = malloc(sizeof(mk_create_coll_context));
-    
+
     context->session = session;
     context->cb = cb;
 

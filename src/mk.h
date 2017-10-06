@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <uv.h>
 
+#define MK_DEBUG 1
+
 #include "engine/memory.h"
 
 typedef struct _mk_document {

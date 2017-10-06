@@ -46,6 +46,10 @@ static void mk_insert_on_open_coll(mk_open_coll_request *req)
 
     mk_append_document_to_coll(collection, document);
 
+    if (context->cb != NULL) {
+        (context->cb)(context->session);
+    }
+
     free(context);
     free(values);
     free(req);

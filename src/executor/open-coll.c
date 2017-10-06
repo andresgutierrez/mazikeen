@@ -3,104 +3,108 @@
 
 static void mk_open_coll_on_fetch_page(mk_open_coll_context *context)
 {
-    uv_fs_req_cleanup(context->read_req);
-    free(context->read_req);
+	uv_fs_req_cleanup(context->read_req);
+	free(context->read_req);
 
-    if (context->cb != NULL) {
-        (context->cb)(context->req);
-    }
+	if (context->cb != NULL) {
+		(context->cb)(context->req);
+	}
 
-    free(context);
+	free(context);
 }
 
 static void mk_open_coll_on_read(uv_fs_t *req)
 {
-    mk_open_coll_context *context = (mk_open_coll_context*) req->data;
+	mk_open_coll_context *context = (mk_open_coll_context*) req->data;
 
-    if (req->result < 0) {
-        fprintf(stderr, "Read error: %s\n", uv_strerror(req->result));
-        return;
-    }
+	if (req->result < 0) {
+		fprintf(stderr, "Read error: %s\n", uv_strerror(req->result));
+		return;
+	}
 
-    if (req->result == 0) {
-        mk_open_coll_on_fetch_page(context);
-        return;
-    }
+	if (req->result == 0) {
+		mk_open_coll_on_fetch_page(context);
+		return;
+	}
 
-    if (req->result > 0) {
+	if (req->result == MK_PAGE_SIZE) {
+#if MK_DEBUG
+		fprintf(stderr, "Restoring page from disk for: %s (%zd bytes)\n", context->collection->name, req->result);
+#endif
+		memcpy(
+			context->collection->writable_page,
+			context->iov.base,
+			req->result
+		);
+	}
 
-        memcpy(
-            (&context->collection->writable_page->data) + context->collection->writable_page->pointer,
-            context->iov.base,
-            req->result
-        );
-
-        context->collection->writable_page->pointer += req->result;
-
-        mk_open_coll_on_fetch_page(context);
-        return;
-    }
+	mk_open_coll_on_fetch_page(context);
+	return;
 }
 
 static void mk_open_coll_on_open(uv_fs_t *req)
 {
-    mk_open_coll_context *context = (mk_open_coll_context*) req->data;
+	mk_open_coll_context *context = (mk_open_coll_context*) req->data;
 
-    if (req->result < 0) {
-        fprintf(stderr, "error opening file: %s\n", uv_strerror((int)req->result));
-        return;
-    }
+	if (req->result < 0) {
+		fprintf(stderr, "Error: opening file: %s\n", uv_strerror((int)req->result));
+		return;
+	}
 
-    context->collection->open_req = req;
-    context->collection->writable_page = mk_allocate_page();
+	context->collection->open_req = req;
+	context->collection->writable_page = mk_allocate_page();
 
-    context->read_req = malloc(sizeof(uv_fs_t));
-    context->read_req->data = context;
+	context->read_req = malloc(sizeof(uv_fs_t));
+	context->read_req->data = context;
 
-    context->buffer = malloc(MK_PAGE_SIZE);
-    context->buffer_len = MK_PAGE_SIZE;
+	context->buffer = malloc(sizeof(mk_page));
+	context->buffer_len = sizeof(mk_page);
 
-    context->iov = uv_buf_init(context->buffer, context->buffer_len);
-    uv_fs_read(uv_default_loop(), context->read_req, req->result, &context->iov, 1, -1, mk_open_coll_on_read);
+	context->iov = uv_buf_init(context->buffer, context->buffer_len);
+	uv_fs_read(uv_default_loop(), context->read_req, req->result, &context->iov, 1, -1, mk_open_coll_on_read);
 }
 
 static void mk_open_coll_on_stat(uv_fs_t *req)
 {
-    if (req->result < 0) {
-        fprintf(stderr, "Error stat file: %s\n", uv_strerror((int)req->result));
-        return;
-    }
+	if (req->result < 0) {
+		fprintf(stderr, "Error stat file: %s\n", uv_strerror((int)req->result));
+		return;
+	}
 
-    uv_stat_t *stat = (uv_stat_t *) req->ptr;
-    mk_open_coll_context *context = (mk_open_coll_context*) req->data;
+	uv_stat_t *stat = (uv_stat_t *) req->ptr;
+	mk_open_coll_context *context = (mk_open_coll_context*) req->data;
 
-    if (stat == NULL) {
-        fprintf(stderr, "Collection '%s' could not be opened\n", context->collection->path);
-        return;
-    }
+	if (stat == NULL) {
+		fprintf(stderr, "Collection '%s' could not be opened\n", context->collection->path);
+		return;
+	}
 
-    context->collection->writable_page_offset = stat->st_size / MK_PAGE_SIZE;
+	context->collection->writable_page_offset = stat->st_size / MK_PAGE_SIZE;
 
-    uv_fs_req_cleanup(context->stat_req);
-    free(context->stat_req);
+	uv_fs_req_cleanup(context->stat_req);
+	free(context->stat_req);
 
-    context->open_req = malloc(sizeof(uv_fs_t));
-    context->open_req->data = context;
+	context->open_req = malloc(sizeof(uv_fs_t));
+	context->open_req->data = context;
 
-    uv_fs_open(uv_default_loop(), context->open_req, context->collection->path, O_RDWR | O_CREAT, 0644, mk_open_coll_on_open);
+	uv_fs_open(uv_default_loop(), context->open_req, context->collection->path, O_RDWR | O_CREAT, 0644, mk_open_coll_on_open);
 }
 
 int mk_open_coll(mk_collection *collection, mk_open_coll_request *req, on_open_coll_cb *cb)
 {
-    mk_open_coll_context *context = malloc(sizeof(mk_open_coll_context));
+#if MK_DEBUG
+	fprintf(stderr, "Opening collection: %s\n", collection->name);
+#endif
 
-    context->collection = collection;
-    context->req = req;
-    context->cb = cb;
+	mk_open_coll_context *context = malloc(sizeof(mk_open_coll_context));
 
-    context->stat_req = malloc(sizeof(uv_fs_t));
-    context->stat_req->data = context;
+	context->collection = collection;
+	context->req = req;
+	context->cb = cb;
 
-    uv_fs_stat(uv_default_loop(), context->stat_req, collection->path, mk_open_coll_on_stat);
-    return SUCCESS;
+	context->stat_req = malloc(sizeof(uv_fs_t));
+	context->stat_req->data = context;
+
+	uv_fs_stat(uv_default_loop(), context->stat_req, collection->path, mk_open_coll_on_stat);
+	return SUCCESS;
 }
