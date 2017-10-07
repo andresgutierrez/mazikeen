@@ -69,6 +69,7 @@ typedef struct _mk_parser_status {
 
 #define MK_AST_T_INSERT 2
 #define MK_AST_T_CREATE_COLL 4
+#define MK_AST_T_DROP_COLL 5
 
 #define MK_AST_T_INTEGER 32
 

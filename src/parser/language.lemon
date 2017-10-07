@@ -31,12 +31,20 @@ mk_command(R) ::= mk_create_coll(I) . {
 	R = I;
 }
 
+mk_command(R) ::= mk_drop_coll(I) . {
+	R = I;
+}
+
 mk_open_db(R) ::= USE IDENTIFIER(I) . {
 	R = mk_ret_open_db(I);
 }
 
 mk_insert(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_list(T) PARENTHESES_CLOSE . {
 	R = mk_ret_insert(I, T);
+}
+
+mk_drop_coll(R) ::= DROP COLLECTION IDENTIFIER(I) . {
+	R = mk_ret_drop_coll(I);
 }
 
 mk_create_coll(R) ::= CREATE COLLECTION IDENTIFIER(I) PARENTHESES_OPEN mk_create_coll_field_list(T) PARENTHESES_CLOSE . {

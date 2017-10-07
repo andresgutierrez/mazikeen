@@ -53,8 +53,17 @@ static mk_ast_node *mk_ret_create_coll(mk_parser_token *C, mk_ast_node *fields)
     return node;
 }
 
+static mk_ast_node *mk_ret_drop_coll(mk_parser_token *C)
+{
+    mk_ast_node *node = malloc(sizeof(mk_ast_node));
+    node->type = MK_AST_T_DROP_COLL;
+    node->value = C->token;
+    node->len = C->token_len;    
+    return node;
+}
+
 static mk_ast_node *mk_ret_list(mk_ast_node *left, mk_ast_node *right)
-{    
+{
     mk_ast_node *node = malloc(sizeof(mk_ast_node));
     node->type = MK_AST_T_LIST;
     node->n0 = left;

@@ -100,6 +100,12 @@ int mk_get_token(mk_scanner_state *s, mk_scanner_token *token) {
 			return 0;
 		}
 
+		'drop' {
+			s->active_char += sizeof("drop")-1;
+			token->opcode = MK_T_DROP;
+			return 0;
+		}
+
 		SCHAR = (['] ([\\][']|[\\].|[\001-\377]\[\\'])* [']);
 		SCHAR {
 			token->opcode = MK_T_CHAR;

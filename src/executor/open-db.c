@@ -44,7 +44,7 @@ static void mk_open_db_on_scandir(uv_fs_t *req)
 
     if (context->cb != NULL) {
         (context->cb)(context->session);
-    }
+    }    
 
     free(context);
 }

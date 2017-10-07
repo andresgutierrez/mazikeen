@@ -36,7 +36,7 @@ static void mk_insert_on_open_coll(mk_open_coll_request *req)
 	} while (value != NULL);
 
 	mk_document *document = malloc(sizeof(mk_document));
-	document->pointer = 0;    
+	document->pointer = 0;
 
 	for (int i = 0; i < number; i++) {
 		mk_write_value_to_record(document, values[i]);
@@ -58,13 +58,13 @@ int mk_insert_into_coll(mk_session *session, mk_ast_node *node, on_execute_succe
 	mk_db *db = session->db;
 
 	if (db == NULL) {
-		fprintf(stderr, "No database selected\n");
+		fprintf(stderr, "Error: No database selected\n");
 		return FAILURE;
 	}
 
 	mk_collection *collection = mk_get_collection(db, node->value, node->len);
 	if (collection == NULL) {
-		fprintf(stderr, "Collection '%s' does not exist\n", node->value);
+		fprintf(stderr, "Error: Collection '%s' does not exist\n", node->value);
 		return FAILURE;
 	}
 
@@ -79,7 +79,9 @@ int mk_insert_into_coll(mk_session *session, mk_ast_node *node, on_execute_succe
 	req->data = context;
 
 	if (collection->is_closed) {
-		fprintf(stderr, "Collection '%s' must be opened\n", node->value);
+#if MK_DEBUG
+		fprintf(stderr, "Debug: Collection '%s' must be opened\n", node->value);
+#endif
 		mk_open_coll(collection, req, mk_insert_on_open_coll);
 	} else {
 		mk_insert_on_open_coll(req);

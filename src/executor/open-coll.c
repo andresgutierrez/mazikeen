@@ -18,7 +18,7 @@ static void mk_open_coll_on_read(uv_fs_t *req)
 	mk_open_coll_context *context = (mk_open_coll_context*) req->data;
 
 	if (req->result < 0) {
-		fprintf(stderr, "Read error: %s\n", uv_strerror(req->result));
+		fprintf(stderr, "Error: Read error: %s\n", uv_strerror(req->result));
 		return;
 	}
 
@@ -34,7 +34,7 @@ static void mk_open_coll_on_read(uv_fs_t *req)
 			req->result
 		);
 #if MK_DEBUG
-		fprintf(stderr, "Restored page from disk for: %s (%zd bytes) offset: %d\n", context->collection->name, req->result, context->collection->writable_page->pointer);
+		fprintf(stderr, "Debug: Restored page from disk for: %s (%zd bytes) offset: %d\n", context->collection->name, req->result, context->collection->writable_page->pointer);
 #endif
 	}
 
@@ -93,7 +93,7 @@ static void mk_open_coll_on_stat(uv_fs_t *req)
 int mk_open_coll(mk_collection *collection, mk_open_coll_request *req, on_open_coll_cb *cb)
 {
 #if MK_DEBUG
-	fprintf(stderr, "Opening collection: %s\n", collection->name);
+	fprintf(stderr, "Debug: Opening collection: %s\n", collection->name);
 #endif
 
 	mk_open_coll_context *context = malloc(sizeof(mk_open_coll_context));

@@ -40,6 +40,7 @@
 #define MK_T_COLLECTION 354
 #define MK_T_USE 355
 #define MK_T_DATABASE 356
+#define MK_T_DROP 357
 
 /* Operators */
 #define MK_T_AT '@'
