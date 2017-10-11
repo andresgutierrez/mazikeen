@@ -41,6 +41,8 @@
 #define MK_T_USE 355
 #define MK_T_DATABASE 356
 #define MK_T_DROP 357
+#define MK_T_IF 358
+#define MK_T_EXISTS 359
 
 /* Operators */
 #define MK_T_AT '@'

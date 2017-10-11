@@ -30,6 +30,9 @@ int mk_drop_coll(mk_session *session, mk_ast_node *node, on_execute_succeed *cb)
 
 	mk_collection *collection = mk_get_collection(db, node->value, node->len);
 	if (collection == NULL) {
+		if (node->flags) {
+			return SUCCESS;
+		}
 		fprintf(stderr, "Error: Collection '%s' does not exist\n", node->value);
 		return FAILURE;
 	}

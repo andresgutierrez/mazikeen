@@ -44,7 +44,11 @@ mk_insert(R) ::= INSERT INTO IDENTIFIER(I) VALUES PARENTHESES_OPEN mk_values_lis
 }
 
 mk_drop_coll(R) ::= DROP COLLECTION IDENTIFIER(I) . {
-	R = mk_ret_drop_coll(I);
+	R = mk_ret_drop_coll(I, 0);
+}
+
+mk_drop_coll(R) ::= DROP COLLECTION IF EXISTS IDENTIFIER(I) . {
+	R = mk_ret_drop_coll(I, 1);
 }
 
 mk_create_coll(R) ::= CREATE COLLECTION IDENTIFIER(I) PARENTHESES_OPEN mk_create_coll_field_list(T) PARENTHESES_CLOSE . {

@@ -42,6 +42,7 @@ typedef struct _mk_ast_node {
 	int type;
 	char *value;
 	int len;
+	int flags;
 	struct _mk_ast_node *n0;
 	struct _mk_ast_node *n1;
 	struct _mk_ast_node *n2;

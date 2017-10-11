@@ -104,6 +104,12 @@ mk_ast_node *mk_parse_command(const char *program, size_t program_length, char *
 			case MK_T_DROP:
 				mk_(mk_parser, MK_DROP, NULL, parser_status);
 				break;
+			case MK_T_IF:
+				mk_(mk_parser, MK_IF, NULL, parser_status);
+				break;
+			case MK_T_EXISTS:
+				mk_(mk_parser, MK_EXISTS, NULL, parser_status);
+				break;
 			case MK_T_COLLECTION:
 				mk_(mk_parser, MK_COLLECTION, NULL, parser_status);
 				break;

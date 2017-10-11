@@ -7,6 +7,8 @@
 #define MK_PARENTHESES_CLOSE               7
 #define MK_DROP                            8
 #define MK_COLLECTION                      9
-#define MK_CREATE                         10
-#define MK_COMMA                          11
-#define MK_INTEGER                        12
+#define MK_IF                             10
+#define MK_EXISTS                         11
+#define MK_CREATE                         12
+#define MK_COMMA                          13
+#define MK_INTEGER                        14
