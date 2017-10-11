@@ -8,11 +8,14 @@ int mk_execute_command(mk_session *session, mk_ast_node *node, on_execute_succee
         case MK_AST_T_INSERT:
             return mk_insert_into_coll(session, node, cb);
 
+        case MK_AST_T_OPEN_DB:
+            return mk_open_db(session, node, cb);
+
         case MK_AST_T_CREATE_COLL:
             return mk_create_coll(session, node, cb);
 
-        case MK_AST_T_OPEN_DB:
-            return mk_open_db(session, node, cb);
+        case MK_AST_T_DROP_COLL:
+            return mk_drop_coll(session, node, cb);
 
         default:
             fprintf(stderr, "Error: Unknown Command=%d\n", node->type);

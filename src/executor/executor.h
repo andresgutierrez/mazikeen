@@ -33,6 +33,13 @@ typedef struct _mk_open_coll_context {
     uv_fs_t *open_req;
 } mk_open_coll_context;
 
+typedef struct _mk_drop_coll_context {
+    mk_session *session;
+    mk_collection *collection;    
+    on_execute_succeed *cb;
+    uv_fs_t *unlink_req;
+} mk_drop_coll_context;
+
 typedef struct _mk_create_coll_context {
     mk_session *session;
     char *path;

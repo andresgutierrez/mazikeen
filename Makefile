@@ -6,10 +6,10 @@ LDFLAGS=-L/opt/local/lib -luv
 default: mazikeen
 
 mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o src/executor/executor.o src/executor/create-coll.o \
-		src/executor/open-db.o src/executor/open-coll.o \
+		src/executor/open-db.o src/executor/open-coll.o src/executor/drop-coll.o \
 		src/executor/insert.o src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o
 	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o src/executor/executor.o \
-		src/executor/create-coll.o src/executor/open-db.o src/executor/open-coll.o src/executor/insert.o \
+		src/executor/create-coll.o src/executor/open-db.o src/executor/open-coll.o src/executor/drop-coll.o src/executor/insert.o \
 		src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o -o mazikeen
 
 src/m.o: src/m.c src/mk.h
@@ -40,6 +40,9 @@ src/executor/open-db.o: src/executor/open-db.c src/executor/executor.h
 
 src/executor/open-coll.o: src/executor/open-coll.c src/executor/executor.h
 	$(CC) $(CFLAGS) -c src/executor/open-coll.c -o src/executor/open-coll.o
+
+src/executor/drop-coll.o: src/executor/drop-coll.c src/executor/executor.h
+	$(CC) $(CFLAGS) -c src/executor/drop-coll.c -o src/executor/drop-coll.o
 
 src/executor/insert.o: src/executor/insert.c src/executor/executor.h
 	$(CC) $(CFLAGS) -c src/executor/insert.c -o src/executor/insert.o
