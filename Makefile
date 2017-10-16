@@ -6,16 +6,19 @@ LDFLAGS=-L/opt/local/lib -luv
 default: mazikeen
 
 mazikeen: src/m.o src/parser/scanner.o src/parser/parser.o src/executor/executor.o src/executor/create-coll.o \
-		src/executor/open-db.o src/executor/open-coll.o src/executor/drop-coll.o \
-		src/executor/insert.o src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o
+		src/executor/open-db.o src/executor/open-coll.o src/executor/drop-coll.o src/executor/insert.o \
+		src/engine/engine.o src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o
 	gcc $(LDFLAGS) src/m.o src/parser/scanner.o src/parser/parser.o src/executor/executor.o \
 		src/executor/create-coll.o src/executor/open-db.o src/executor/open-coll.o src/executor/drop-coll.o src/executor/insert.o \
-		src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o -o mazikeen
+		src/engine/engine.o src/engine/memory.o src/engine/packer.o src/engine/writer.o src/engine/reader.o -o mazikeen
 
 src/m.o: src/m.c src/mk.h
 	$(CC) $(CFLAGS) -c src/m.c -o src/m.o
 
 # engine
+src/engine/engine.o: src/engine/engine.c src/engine/engine.h
+	$(CC) $(CFLAGS) -c src/engine/engine.c -o src/engine/engine.o
+
 src/engine/memory.o: src/engine/memory.c src/mk.h src/engine/memory.h src/engine/engine.h
 	$(CC) $(CFLAGS) -c src/engine/memory.c -o src/engine/memory.o
 

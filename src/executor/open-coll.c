@@ -47,7 +47,7 @@ static void mk_open_coll_on_open(uv_fs_t *req)
 	mk_open_coll_context *context = (mk_open_coll_context*) req->data;
 
 	if (req->result < 0) {
-		fprintf(stderr, "Error: opening file: %s\n", uv_strerror((int)req->result));
+		fprintf(stderr, "Error: opening file: %s (%s) [2]\n", uv_strerror((int)req->result), context->collection->path);
 		return;
 	}
 

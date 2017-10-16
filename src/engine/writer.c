@@ -9,7 +9,9 @@ typedef struct _mk_writer_context {
 static mk_page *mk_get_writable_page(mk_collection *collection)
 {
 	if (collection->writable_page == NULL) {
-		fprintf(stderr, "Info: Allocating new page for collection %s\n", collection->name);
+#if MK_DEBUG		
+		fprintf(stderr, "Debug: Allocating new page for collection %s\n", collection->name);
+#endif
 		collection->writable_page = mk_allocate_page();
 	}
 	return collection->writable_page;
@@ -20,7 +22,7 @@ static void mk_append_document_to_coll_cb(uv_fs_t *req)
 	mk_writer_context *context = (mk_writer_context*) req->data;
 
 	if (req->result < 0) {
-		fprintf(stderr, "Error writing to file: %s\n", uv_strerror((int)req->result));
+		fprintf(stderr, "Error: Error writing to file: %s\n", uv_strerror((int)req->result));
 		return;
 	}
 
@@ -35,7 +37,7 @@ void mk_append_document_to_coll(mk_collection *collection, mk_document *document
 	mk_page *writable_page = mk_get_writable_page(collection);
 
 #if MK_DEBUG
-	fprintf(stderr, "Set write pointer in %s to: %d\n", collection->name, writable_page->pointer);
+	fprintf(stderr, "Debug: Set write pointer in %s to: %d\n", collection->name, writable_page->pointer);
 #endif
 
 	memcpy(writable_page->data + writable_page->pointer, document, sizeof(mk_document));

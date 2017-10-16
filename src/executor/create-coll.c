@@ -6,13 +6,20 @@ static void mk_create_coll_cleanup(mk_create_coll_context *context)
 	uv_fs_req_cleanup(context->open_req);
 	uv_fs_req_cleanup(context->close_req);
 
+	mk_collection *collection = malloc(sizeof(mk_collection));
+	collection->path = context->path;
+	collection->name = strndup(context->name, context->name_len);
+	collection->name_len = context->name_len;
+	collection->is_closed = 1;
+
+	context->session->db->collections[context->session->db->number++] = collection;
+
 	if (context->cb != NULL) {
 		(context->cb)(context->session);
 	}
 
 	free(context->open_req);
-	free(context->close_req);
-	free(context->path);
+	free(context->close_req);	
 	free(context);
 }
 
@@ -48,7 +55,7 @@ static void mk_create_coll_on_open(uv_fs_t *req)
 	mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
 	if (req->result < 0) {
-		fprintf(stderr, "Error: opening file: %s\n", uv_strerror((int)req->result));
+		fprintf(stderr, "Error: opening file: %s [1]\n", uv_strerror((int)req->result));
 		return;
 	}
 
@@ -62,7 +69,7 @@ static void mk_create_coll_on_stat(uv_fs_t *req)
 	mk_create_coll_context *context = (mk_create_coll_context*) req->data;
 
 	if (stat != NULL) {
-		fprintf(stderr, "Error: Collection '%s' already exists\n", context->path);
+		fprintf(stderr, "Error: Collection '%s' already exists [1]\n", context->path);
 		return;
 	}
 
@@ -87,7 +94,7 @@ int mk_create_coll(mk_session *session, mk_ast_node *node, on_execute_succeed *c
 	}
 
 	if ((mk_get_collection(db, node->value, node->len)) != NULL) {
-		fprintf(stderr, "Error: Collection '%s' already exists\n", node->value);
+		fprintf(stderr, "Error: Collection '%s' already exists [2]\n", node->value);
 		return FAILURE;
 	}
 
@@ -95,6 +102,9 @@ int mk_create_coll(mk_session *session, mk_ast_node *node, on_execute_succeed *c
 
 	context->session = session;
 	context->cb = cb;
+
+	context->name = node->value;
+	context->name_len = node->len;
 
 	context->stat_req = malloc(sizeof(uv_fs_t));
 	context->stat_req->data = context;

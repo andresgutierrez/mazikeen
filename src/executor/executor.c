@@ -42,6 +42,9 @@ mk_collection *mk_get_collection(mk_db *db, const char *name, int name_len)
 {
     for (int i = 0; i < db->number; i++) {
         mk_collection *collection = db->collections[i];
+        if (collection == NULL) {
+            continue;
+        }
         if (name_len != collection->name_len) {
             continue;
         }
